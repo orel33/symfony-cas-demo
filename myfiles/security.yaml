@@ -1,0 +1,24 @@
+security:
+  enable_authenticator_manager: true
+
+  providers:
+    app_user_provider:
+      memory: ~
+
+  firewalls:
+    dev:
+      pattern: ^/(_(profiler|wdt)|css|images|js)/
+      security: false
+
+    main:
+      lazy: true
+      provider: app_user_provider
+      custom_authenticators:
+        - App\Security\CasAuthenticator
+      logout:
+        path: /logout
+        target: /
+
+  access_control:
+    - { path: ^/hello, roles: ROLE_USER }
+    - { path: ^/, roles: PUBLIC_ACCESS }
