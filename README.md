@@ -1,9 +1,6 @@
 # Tutoriel CAS avec Symfony
 
-Documentation Symfony : <https://symfony.com/doc>
-
-
-## Quick Start
+*Avertissement : Il reste des **TODO** dans ce tutoriel, notamment pour utiliser la démo en HTTPS côté serveur Web (Symfony) et côté serveur CAS.*
 
 ## Prérequis
 
@@ -30,13 +27,14 @@ $ symfony version
   Symfony CLI version 5.15.1 (c) 2021-2025 Fabien Potencier (2025-10-04T08:05:57Z - stable)
 ```
 
-## Demo Cas
+* Documentation Symfony : <https://symfony.com/doc>
+
+## Demo Cas avec Symfony
 
 ```bash
 $ composer create-project symfony/skeleton cas-demo
 $ cd cas-demo
 $ composer require symfony/web-profiler-bundle symfony/twig-bundle symfony/security-bundle
-$ ...
 ```
 
 ### Création de la page Hello World
@@ -46,11 +44,11 @@ $ composer require symfony/maker-bundle --dev
 $ php bin/console make:controller HelloController
 ```
 
-* On ajoute [HelloController.php](cas-demo/src/Controller/HelloController.php) dans `src/Controller` pour afficher une simple page "Hello World!".
+* On ajoute [HelloController.php](myfiles/HelloController.php) dans `src/Controller` pour afficher une simple page "Hello World!".
 * On lance le serveur avec la commande `symfony serve`, qui devient accessible sur <http://localhost:8000/hello>
 
 
-### Création de la page d'accueil
+### Création de la page d'accueil (TODO)
 
 Remplaçons maintenant la page d'accueil `index.php` par défaut... 
 
@@ -61,29 +59,23 @@ $ php bin/console make:controller PublicController
   Success! 
 ```
 
-
-
 ### Installation d'un client CAS
 
-```bash
-# $ composer require jasig/phpcas # deprecated!
-# $ composer remove jasig/phpcas
-$ composer require apereo/phpcas
-```
-Version de phpCAS :
+On veut maintenant protéger l'accès à la page *hello* via le CAS. L'application *Symfony* joue donc le rôle d'un client CAS, ce qui suppose que l'on dispose d'un serveur CAS en place.
 
 ```bash
-composer show | grep -i phpcas
-apereo/phpcas                      1.6.1 
+$ composer require apereo/phpcas
+# Version de phpCAS :
+$ composer show | grep -i phpcas
+  apereo/phpcas => 1.6.1 
 ```
 
 * Web : <https://github.com/apereo/phpCAS>
 * Documentation : <https://apereo.github.io/phpCAS/api/>
 
+Il faut ensuite ajouter la page [CasAuthenticator.php](myfiles/CasAuthenticator.php) dans `src/Security/`. 
 
-Il faut ensuite ajouter la page [CasAuthenticator.php](cas-demo/src/Security/CasAuthenticator.php) dans `src/Security`
-
-On édite ensuite le fichier [security.yaml](cas-demo/config/packages/security.yaml) pour ajouter la section suivante : 
+On édite ensuite le fichier [security.yaml](myfiles/security.yaml) dans `config/packages/` pour ajouter la section suivante : 
 
 ```yaml
 security:
@@ -109,24 +101,22 @@ security:
 
 Le fichier `security.yaml` est divisé en trois grandes sections :
 
-* *providers* — comment Symfony récupère les utilisateurs (leurs identités, rôles, etc.)
-* *firewalls* — quelles zones du site nécessitent une authentification et comment
-* *access_control* — quelles routes sont protégées et par quels rôles
+* *providers* : comment Symfony récupère les utilisateurs (leurs identités, rôles, etc.) ;
+* *firewalls* :  quelles zones du site nécessitent une authentification et comment ;
+* *access_control* : quelles routes sont protégées et par quels rôles.
 
-Ici, on utilise le provider *memory*, c’est-à-dire des utilisateurs en mémoire, sans base de données. Dans une appli classique, tu aurais ici un entity provider lié à une table User en base.
+Ici, on utilise le provider *memory*, c’est-à-dire des utilisateurs en mémoire, sans base de données. Dans une appli classique, on utiliserait plutôt un *entity* provider lié à une table User en base.
 
-Ce firewall (nommé *dev*, mais il pourrait être *public_assets*) désactive la sécurité pour certaines URL techniques de Symfony : `/css, /js, /images,` ... On ne veut pas que le CAS bloque l'accès à ces ressources.
+Le firewall (nommé *dev*, mais il pourrait autrement) désactive la sécurité pour certaines URL techniques de Symfony : `/css, /js, /images,` ... On ne veut pas que le CAS bloque l'accès à ces ressources.
 
-Le firewall *main* protège toutes les autres routes du site. C’est le plus important. *custom_authenticators* indique quelle classe gère l’authentification (ici CasAuthenticator). Symfony appellera ses méthodes `supports(), authenticate(),` etc. *logout* définit une route `/logout` qui permet de se déconnecter (gérée automatiquement par Symfony),  avec *target* la page vers laquelle l’utilisateur est redirigé après déconnexion.
+Le firewall *main* protège toutes les autres routes du site. C’est le plus important. *custom_authenticators* indique quelle classe gère l’authentification (ici CasAuthenticator). Symfony appellera ses méthodes `supports(), authenticate(),` etc. *logout* définit une route `/logout` qui permet de se déconnecter (gérée automatiquement par Symfony), avec *target* la page vers laquelle l’utilisateur est redirigé après déconnexion.
 
-### Notes de sécurité
+**Nota Bene** : En dev, `\phpCAS::setNoCasServerValidation()` désactive la vérification SSL. Utile surtout si on utilise un certificat auto-signé dont la CA n'est pas reconnu par le système. En prod, on peut le remplacer par : `\phpCAS::setCasServerCACert('/path/to/ca.pem');`
 
-En dev, `\phpCAS::setNoCasServerValidation()` désactive la vérification SSL.
-En prod, remplace par : `\phpCAS::setCasServerCACert('/path/to/cachain.pem');`
-
-Tu peux stocker les infos du serveur CAS dans .env :
+On pourrait aussi stocker les infos du serveur CAS dans `.env` ou `.env.local` pour avoir un code plus joli :
 
 ```
+APP_ENV=dev
 CAS_HOST=cas.example.com
 CAS_PORT=443
 CAS_CONTEXT=/cas
@@ -135,19 +125,37 @@ CAS_CONTEXT=/cas
 Par défaut, Symfony CLI lance le serveur en mode *dev* :
 
 ```bash 
-$ symfony serve --no-tls  # APP_ENV=dev 
 $ symfony serve -vvv --no-tls
 ```
 
-=> regarder le fichier `.env`
-
-On peut forcer le mode *prod* : 
+On peut forcer serveur en mode *prod* : 
 
 ```bash 
 $ APP_ENV=prod symfony serve
 ```
 
-## Serveur Web en HTTPS
+### Configuration du Client CAS
+
+On modifie les lignes suivantes dans le fichier [CasAuthenticator.php](myfiles/CasAuthenticator.php) :
+
+```php
+$redirecturl = 'http://localhost:8000'; // URL de retour après authentification
+\phpCAS::client(CAS_VERSION_2_0, 'localhost', 9000, '/cas', $redirecturl); 
+\phpCAS::setNoCasServerValidation(); // ne vérifie pas la CA du certificat du serveur CAS (test en local uniquement)
+```
+
+Maintenant, lorsqu'on essaie d'accéder à la page <http://localhost:8000/hello> de notre application web Symfony, celle-ci délègue au serveur CAS l'authentification <http://localhost:9000/cas>. Le scénario est le suivant : 
+
+1. Consultation de la page : <http://localhost:8000/hello> 
+2. Redirection vers le serveur CAS : <http://localhost:9000/cas/login?service=http%3A%2F%2Flocalhost%3A8000%2Fhello>
+3. Saisie des identifiants auprès du serveur CAS.
+4. Si l'authentification est réussie (et que le service est reconnu), alors le serveur CAS nos redirige sur l'URL de retour <http://localhost:8000/hello>.
+
+**Bug** : Symfony se redirige *obligatoirement* vers le serveur CAS en HTTPS.
+
+Si le service web `localhost` n'est pas enregistré auprès du CAS, on obtient l'erreur *Application Not Authorized to Use CAS*.
+
+## Serveur Web en HTTPS (TODO)
 
 Installation d'une autorité de certification locale dans `/etc/ssl/certs/` et d'un certificat auto-signé dans `~/.symfony/certs/`.
 
@@ -171,107 +179,101 @@ $ openssl x509 -in localhost.pem -noout -text
 ```bash
 $ symfony serve -vvv
 $ symfony server:status
-
 ```
 
+## Mise en place d'un serveur CAS avec Docker
 
-### Mise en place d'un serveur CAS
+Lancons le serveur CAS en local avec le Docker fourni par *Apereo*.
 
 ```bash
-$ docker run --rm -e SERVER_SSL_ENABLED=false -e SERVER_PORT=9000 -p 9000:9000 --name cas-server apereo/cas:6.4.0
+$ docker run --rm -e SERVER_SSL_ENABLED=false -e SERVER_PORT=9000 -p 9000:9000 --name cas-server apereo/cas:7.3.0
 ```
 
 * URL d'accès : <http://localhost:9000/cas/login>
-* Identifiants de test : casuser / Mellon
+* Identifiants par défaut de test : `casuser` (password: `Mellon`)
 
 Pour se connecter en interactif au serveur CAS :
 
 ```bash
-$ docker exec -it cas-server /bin/sh
+$ docker exec -it cas-server /bin/bash
 ```
 
-Dans le Docker CAS, on peut ajouter dans le répertoire `/etc/cas/config/` des fichiers pour modifier la config par défaut du serveur CAS, le plus simple avec un montage de volume.
+### Configuration du serveur CAS
 
-En pratique, on peut ajouter dans ce répertoire un fichier `application.properties`
+Dans le Docker CAS, on peut ajouter dans le répertoire `/etc/cas/config/` des fichiers pour modifier la config par défaut du serveur CAS, le plus simple avec un montage de volume. En pratique, on peut ajouter dans ce répertoire un fichier [application.properties](myfiles/config/application.properties) avec lis lignes suivantes.
 
 ```json
-cas.authn.accept.any.service=true  // failure?
-cas.authn.accept.users=casuser::Mellon,toto::toto,tutu::tutu
+# --- Config de Base
+server.port=9000
+cas.server.prefix=${cas.server.name}/cas
+cas.server.name=http://localhost:9000
+server.ssl.enabled=false
+
+# --- Authentification simple (utilisateurs internes)
+cas.authn.accept.users=toto::toto,tutu::tutu,admin::admin
+
 ```
 
-Doc : <https://apereo.github.io/cas/7.2.x/authentication/Configuring-Authentication-Components.html>
+* Documentation : <https://apereo.github.io/cas/7.3.x/authentication/Configuring-Authentication-Components.html>
 
-afin d'autoriser tous les services, et ajouter des *users*.
+Avec ce fichier de config, il suffit de lancer le Docker de la manière suivante, comme dans le script [start-cas-server.sh](./start-cas-server.sh) :
+
 
 ```bash 
-$ docker run --rm -e SERVER_SSL_ENABLED=false -e SERVER_PORT=9000 -p 9000:9000 -v $(pwd)/cas/config:/etc/cas/config --name cas-server apereo/cas:6.4.0
+docker run --rm -it -p 9000:9000 -v $(pwd)/myfiles/config:/etc/cas/config --name cas-server apereo/cas:7.3.0
 ```
 
-```bash
-$ curl -u admin:admin http://localhost:9000/cas/services
+### Enregistrement d'un service auprès du serveur CAS
+
+La dernière étape consiste à enregistrer dans le Docker CAS notre application web *Symfony* installé sur `http://localhost:8000`. 
+
+Il suffir de rajouter les lignes suivantes dans le  fichier [application.properties](myfiles/config/application.properties)
+
+```josn
+# --- Enregistrement des services JSON
+cas.service-registry.core.init-from-json=true
+cas.service-registry.json.location=file:/etc/cas/config/services
 ```
 
----
+et de rajouter le fichier [symfony-demo-1.json](myfiles/config/services/symfony-demo-1.json) dans ``/etc/cas/config/services/`.
 
-On modifie les lignes suivantes...
-
-```php
-$redirecturl="..."
-\phpCAS::client(CAS_VERSION_2_0, 'localhost', 9000, '/cas', redirecturl);            # docker
-\phpCAS::setNoCasServerValidation(); // OK pour tests uniquement
+```json
+{
+  "@class" : "org.apereo.cas.services.CasRegisteredService",
+  "serviceId" : "http://localhost:8000/.*",
+  "name" : "Symfony Demo",
+  "id" : 1,
+  "evaluationOrder" : 1
+}
 ```
 
-Test de la page `hello` avec auth CAS : <http://localhost:8000/hello> => OK
+On redémarre le serveur CAS en utilisant Docker avec l'option `-v $(pwd)/myfiles/config:/etc/cas/config`.
 
-Test direct d'authentification d'un service CAS <http://localhost:8000/hello> : 
-=>  <http://localhost:9000/cas/login?service=http%3A%2F%2Flocalhost%3A8000%2Fhello>
+### Accès CAS en HTTPS (TODO)
 
-Erreur “Application Not Authorized to Use CAS”.
-
-En fait, il faut enregistrer dans le Docker CAS le service `http://localhost:8000` via un fichier JSON....
-
-
-
- `services/myservice.json` avec le service (comme je t’ai montré avant).
-
-CAS charge automatiquement tous les services présents dans le dossier /etc/cas/config/services.
-
-### Certificats
+Il faut commencer par générer un certificat auto-signé pour `localhost`.
 
 ```bash
 # openssl rsa -in cas.key -out cas.key
-openssl genrsa -out cas.key 2048
-openssl rsa -in cas.key -check
-openssl req -x509 -nodes -days 365 -key cas.key -out cas.crt -subj "/CN=localhost"
-# or
-openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout cas.key -out cas.crt -subj "/CN=localhost"
+$ openssl genrsa -out cas.key 2048
+$ openssl rsa -in cas.key -check
+$ openssl req -x509 -nodes -days 365 -key cas.key -out cas.crt -subj "/CN=localhost"
 ```
 
-Le serveur CAS utilise des certificats au format P12
+Ou plus simplement : 
 
 ```bash
-openssl pkcs12 -export -in cas.crt -inkey cas.key -out cas-keystore.p12 -name cas -passout pass:secret
+$ openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout cas.key -out cas.crt -subj "/CN=localhost"
 ```
 
-openssl pkcs12 -info -in cas-keystore.p12 -nodes
-keytool -list -keystore cas-keystore.p12 
+Le serveur CAS utilise des certificats au format P12.
 
-### Test du CAS 7.3
+```bash
+$ openssl pkcs12 -export -in cas.crt -inkey cas.key -out cas-keystore.p12 -name cas -passout pass:secret
+$ openssl pkcs12 -info -in cas-keystore.p12 -nodes
+$ keytool -list -keystore cas-keystore.p12 
+```
 
-
-=> http://localhost:9000/cas/actuator/health
-curl -u admin:admin http://localhost:9000/cas/actuator/services
-
-=> http://localhost:9000/cas/actuator/health
-curl -u admin:admin http://localhost:9000/cas/actuator/health
-
-=> http://localhost:9000/cas/login?service=http://localhost:8000/hello
-
-=> http://localhost:9000/cas/login?service=http%3A%2F%2Flocalhost%3A8000%2Fhello
-=> http://localhost:9000/cas/serviceValidate?service=http%3A%2F%2Flocalhost%3A8000%2Fhello&ticket=ST-1-1wWiRz8z7-HiTUtgG2TXex8I5ZY-753de86c6a15
-
-$ symfony serve -vvv --no-tls
-
-
+Les certificats générés sont disponibles dans `myfiles/certs`.
 
 ---
