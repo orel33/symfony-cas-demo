@@ -5,12 +5,28 @@ security:
     app_user_provider:
       memory: ~
 
+    # providers:
+    #     app_user_provider:
+    #         memory:
+    #             users:
+    #                 user:
+    #                     password: null
+    #                     roles: ['ROLE_USER']
+
+
   firewalls:
     dev:
       pattern: ^/(_(profiler|wdt)|css|images|js)/
       security: false
 
+    # 🔓 Firewall public : pas de sécurité pour /
+    public:
+        pattern: ^/$
+        security: false
+
+    # 🔐 Firewall principal protégé par CAS
     main:
+      pattern: ^/
       lazy: true
       provider: app_user_provider
       custom_authenticators:
@@ -20,5 +36,11 @@ security:
         target: /
 
   access_control:
-    - { path: ^/hello, roles: ROLE_USER }
-    - { path: ^/, roles: PUBLIC_ACCESS }
+    # Autoriser tout le monde sur la page d'accueil
+    - { path: ^/$, roles: PUBLIC_ACCESS }
+    # Protéger tout le reste
+    - { path: ^/.*, roles: ROLE_USER }
+
+    # - { path: ^/hello, roles: ROLE_USER }
+    # - { path: ^/, roles: PUBLIC_ACCESS }
+    # - { path: ^/$, roles: IS_AUTHENTICATED_ANONYMOUSLY }

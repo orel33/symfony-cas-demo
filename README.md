@@ -2,6 +2,9 @@
 
 Documentation Symfony : <https://symfony.com/doc>
 
+
+## Quick Start
+
 ## Prérequis
 
 * PHP ≥ 8.1
@@ -45,6 +48,20 @@ $ php bin/console make:controller HelloController
 
 * On ajoute [HelloController.php](cas-demo/src/Controller/HelloController.php) dans `src/Controller` pour afficher une simple page "Hello World!".
 * On lance le serveur avec la commande `symfony serve`, qui devient accessible sur <http://localhost:8000/hello>
+
+
+### Création de la page d'accueil
+
+Remplaçons maintenant la page d'accueil `index.php` par défaut... 
+
+```bash
+$ php bin/console make:controller PublicController
+  created: src/Controller/PublicController.php
+  created: templates/public/index.html.twig
+  Success! 
+```
+
+
 
 ### Installation d'un client CAS
 
@@ -130,7 +147,35 @@ On peut forcer le mode *prod* :
 $ APP_ENV=prod symfony serve
 ```
 
-### CAS de Test
+## Serveur Web en HTTPS
+
+Installation d'une autorité de certification locale dans `/etc/ssl/certs/` et d'un certificat auto-signé dans `~/.symfony/certs/`.
+
+```bash
+$ symfony server:ca:install
+```
+
+Variante avec la commande `mkcert`
+
+```bash
+$ sudo apt install mkcert libnss3-tools
+$ mkcert -install               # install CA in ~/.local/share/mkcert/ for certificates to be trusted automatically
+$ mkdir -p ~/.symfony/certs
+$ cd ~/.symfony/certs
+$ mkcert localhost 127.0.0.1 ::1
+$ openssl x509 -in localhost.pem -noout -text 
+```
+
+**Nota Bene** : Dans ce certificat, le CN n'est pas localhost, mais les SAN (Subject Alternative Name) sont corrects et bien pris en compte par les navigateurs modernes (qui ignorent le CN).
+
+```bash
+$ symfony serve -vvv
+$ symfony server:status
+
+```
+
+
+### Mise en place d'un serveur CAS
 
 ```bash
 $ docker run --rm -e SERVER_SSL_ENABLED=false -e SERVER_PORT=9000 -p 9000:9000 --name cas-server apereo/cas:6.4.0

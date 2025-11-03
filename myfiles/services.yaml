@@ -1,4 +1,10 @@
 services:
+
+
+    App\Controller\PublicController:
+        public: true
+        tags: ['controller.service_arguments']
+
     App\Security\CasAuthenticator:
         arguments:
             $router: '@router'
