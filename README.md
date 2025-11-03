@@ -211,7 +211,6 @@ server.ssl.enabled=false
 
 # --- Authentification simple (utilisateurs internes)
 cas.authn.accept.users=toto::toto,tutu::tutu,admin::admin
-
 ```
 
 * Documentation : <https://apereo.github.io/cas/7.3.x/authentication/Configuring-Authentication-Components.html>
@@ -223,6 +222,8 @@ Avec ce fichier de config, il suffit de lancer le Docker de la manière suivante
 docker run --rm -it -p 9000:9000 -v $(pwd)/myfiles/config:/etc/cas/config --name cas-server apereo/cas:7.3.0
 ```
 
+* Test du login : <http://localhost:9000/cas/login> (saisir toto / toto)
+
 ### Enregistrement d'un service auprès du serveur CAS
 
 La dernière étape consiste à enregistrer dans le Docker CAS notre application web *Symfony* installé sur `http://localhost:8000`. 
@@ -230,7 +231,7 @@ La dernière étape consiste à enregistrer dans le Docker CAS notre application
 Il suffir de rajouter les lignes suivantes dans le fichier [application.properties](myfiles/config/application.properties).
 
 ```json
-# --- Enregistrement des services JSON
+# --- Enregistrement des services
 cas.service-registry.core.init-from-json=true
 cas.service-registry.json.location=file:/etc/cas/config/services
 ```
@@ -249,7 +250,7 @@ et de rajouter le fichier [symfony-demo-1.json](myfiles/config/services/symfony-
 
 On redémarre le serveur CAS avec Docker... 
 
-**TODO**: Comment vérifier que le service est bien enregistré avec une requête `curl` ?
+**TODO**: Comment vérifier que le service est bien enregistré ?
 
 ### Accès CAS en HTTPS (TODO)
 

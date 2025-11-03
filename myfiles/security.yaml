@@ -3,28 +3,21 @@ security:
 
   providers:
     app_user_provider:
-      memory: ~
-
-    # providers:
-    #     app_user_provider:
-    #         memory:
-    #             users:
-    #                 user:
-    #                     password: null
-    #                     roles: ['ROLE_USER']
-
+      memory: ~ # Pas de base de données, juste utilisateur CAS
 
   firewalls:
+
+    # Firewall dev : pas de sécurité pour les assets
     dev:
       pattern: ^/(_(profiler|wdt)|css|images|js)/
       security: false
 
-    # 🔓 Firewall public : pas de sécurité pour /
+    # Firewall public : pas de sécurité pour /
     public:
-        pattern: ^/$
-        security: false
+      pattern: ^/$
+      security: false
 
-    # 🔐 Firewall principal protégé par CAS
+    # Firewall principal protégé par CAS
     main:
       pattern: ^/
       lazy: true
@@ -38,9 +31,10 @@ security:
   access_control:
     # Autoriser tout le monde sur la page d'accueil
     - { path: ^/$, roles: PUBLIC_ACCESS }
+    # Protéger la route /hello
+    - { path: ^/hello, roles: ROLE_USER }
     # Protéger tout le reste
     - { path: ^/.*, roles: ROLE_USER }
 
-    # - { path: ^/hello, roles: ROLE_USER }
     # - { path: ^/, roles: PUBLIC_ACCESS }
     # - { path: ^/$, roles: IS_AUTHENTICATED_ANONYMOUSLY }
