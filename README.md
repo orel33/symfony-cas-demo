@@ -227,9 +227,9 @@ docker run --rm -it -p 9000:9000 -v $(pwd)/myfiles/config:/etc/cas/config --name
 
 La dernière étape consiste à enregistrer dans le Docker CAS notre application web *Symfony* installé sur `http://localhost:8000`. 
 
-Il suffir de rajouter les lignes suivantes dans le  fichier [application.properties](myfiles/config/application.properties)
+Il suffir de rajouter les lignes suivantes dans le fichier [application.properties](myfiles/config/application.properties).
 
-```josn
+```json
 # --- Enregistrement des services JSON
 cas.service-registry.core.init-from-json=true
 cas.service-registry.json.location=file:/etc/cas/config/services
@@ -247,7 +247,9 @@ et de rajouter le fichier [symfony-demo-1.json](myfiles/config/services/symfony-
 }
 ```
 
-On redémarre le serveur CAS en utilisant Docker avec l'option `-v $(pwd)/myfiles/config:/etc/cas/config`.
+On redémarre le serveur CAS avec Docker... 
+
+**TODO**: Comment vérifier que le service est bien enregistré avec une requête `curl` ?
 
 ### Accès CAS en HTTPS (TODO)
 
@@ -274,6 +276,25 @@ $ openssl pkcs12 -info -in cas-keystore.p12 -nodes
 $ keytool -list -keystore cas-keystore.p12 
 ```
 
-Les certificats générés sont disponibles dans `myfiles/certs`.
+Les certificats générés sont disponibles dans [myfiles/certs](myfiles/certs) et le fichier P12 doit être installé dans le répertoire `/etc/cas/ssl/` du serveur CAS.
+
+Il faut encore modifier les lignes suivantes dans le fichier [application.properties](myfiles/config/application.properties) du serveur CAS : 
+
+
+```json
+# enable SSL/TLS
+cas.server.name=https://localhost:9000      # à la place de http 
+server.ssl.enabled=true
+
+server.ssl.key-store-type=PKCS12
+server.ssl.key-store=/etc/cas/ssl/cas-keystore.p12
+server.ssl.key-store-provider=SUN
+server.ssl.key-alias=cas
+server.ssl.key-store-password=pouet 
+```
+
+On peut relancer le serveur Docker en lui passant l'opton `-v $(pwd)/myfiles/certs/cas-keystore.p12:/etc/cas/ssl/cas-keystore.p12`...
+
+**BUG** : mais ça ne marche pas avec une sombre erreur de *padding* au chargement du certificat P12 !
 
 ---
