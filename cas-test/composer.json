@@ -1,0 +1,14 @@
+{
+    "name": "test/cas-client",
+    "description": "Test CAS client",
+    "type": "project",
+    "require": {
+        "apereo/phpcas": "^1.6"
+    },
+    "authors": [
+        {
+            "name": "Aurelien Esnard",
+            "email": "aurelien.esnard@u-bordeaux.fr"
+        }
+    ]
+}
