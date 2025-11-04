@@ -69,8 +69,7 @@ Les certificats générés sont disponibles dans [myfiles/certs](myfiles/certs) 
 
 Il faut encore modifier les lignes suivantes dans le fichier `application.properties` du serveur CAS : 
 
-
-```json
+```
 # enable SSL/TLS
 cas.server.name=https://localhost:9000      # à la place de http 
 server.ssl.enabled=true
