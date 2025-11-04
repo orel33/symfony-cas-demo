@@ -10,6 +10,9 @@ use Symfony\Component\Security\Http\Authenticator\Passport\SelfValidatingPasspor
 use Symfony\Component\Security\Http\Authenticator\Passport\Badge\UserBadge;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 
+use App\Entity\User;
+
+
 class CasAuthenticator extends AbstractAuthenticator
 {
     private RouterInterface $router;
@@ -24,43 +27,61 @@ class CasAuthenticator extends AbstractAuthenticator
         return true;
     }
 
-
-// note Only one of the phpCAS::client() and phpCAS::proxy functions should be     
-// called, only once, and before all other methods (except phpCAS::getVersion()     
-//  and phpCAS::setDebug()).     
-//  public static function client($server_version, $server_hostname, $server_port, $server_uri, $service_base_url,        
-//                                $changeSessionID = true, \SessionHandlerInterface $sessionHandler = null) 
-
     public function authenticate(Request $request): SelfValidatingPassport
     {
         if (session_status() === PHP_SESSION_NONE) { // useful ?
             session_start();
         }
 
-        // ⚡ Initialisation phpCAS
+        error_log('[CAS] Début de l’authentification CAS');
+
+        // Initialisation phpCAS
         \phpCAS::setDebug('/tmp/phpcas.log');
-        $redirecturl = 'http://localhost:8000'; # URL de retour après authentification
-        \phpCAS::client(CAS_VERSION_2_0, 'localhost', 9000, '/cas', $redirecturl); # FIXME: lookup for https://localhost:9000/cas
+        $redirect_url = 'http://localhost:8000/hello'; # URL de retour après authentification
+        \phpCAS::client(CAS_VERSION_2_0, 'localhost', 9000, '/cas', $redirect_url);
         \phpCAS::setNoCasServerValidation(); // accepte les certificats auto-signés (test en local uniquement)
 
-        // 🔒 Force la connexion CAS
-        // \phpCAS::setFixedServiceURL('http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
-        // \phpCAS::setFixedServiceURL('http://localhost:8000/hello'); // forcer le retour sur cette URL en HTTP!
+        // Forcer manuellement l'URL de service en HTTP (utile en dev local)
+        \phpCAS::setFixedServiceURL($redirect_url);
+        \phpCAS::setServerLoginURL('http://localhost:9000/cas/login?service=' . urlencode($redirect_url));
+        \phpCAS::setServerServiceValidateURL('http://localhost:9000/cas/serviceValidate');
+        \phpCAS::setServerLogoutURL('http://localhost:9000/cas/logout');
+        // $logout_url = 'http://localhost:8000/'; // URL de redirection après déconnexion
+        // \phpCAS::setServerLogoutURL('http://localhost:9000/cas/logout?service=' . urlencode($logout_url));
+
+        // Vérifie si l'utilisateur est authentifié, sinon redirige vers le CAS
         \phpCAS::forceAuthentication();
 
         $username = \phpCAS::getUser();
         error_log('[CAS] Utilisateur authentifié : ' . $username);
 
-        return new SelfValidatingPassport(new UserBadge($username));
+        $passeport = new SelfValidatingPassport(new UserBadge($username));
+         
+        return $passeport;
+
+        // Crée un utilisateur "virtuel" pour Symfony
+        // return new SelfValidatingPassport(
+        //     new UserBadge($username, function (string $userIdentifier) {
+        //         // Création à la volée d’un utilisateur (aucune BD requise)
+        //         return new User($userIdentifier, ['ROLE_USER']);
+        //     })
+        // );
     }
+
+    // 
 
     public function onAuthenticationSuccess(Request $request, $token, string $firewallName): ?Response
     {
-        return new RedirectResponse($this->router->generate('app_hello'));
+        error_log('[CAS] onAuthenticationSuccess appelé');
+        // return new RedirectResponse($this->router->generate('app_hello'));
+        // Redirige vers la page d’accueil après succès
+        return null; // continue la requête normalement
     }
 
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception): ?Response
     {
-        return new Response('Échec de l’authentification CAS', Response::HTTP_UNAUTHORIZED);
+        error_log('[CAS] onAuthenticationFailure appelé');
+        return new Response('Erreur CAS : ' . $exception->getMessage(), Response::HTTP_UNAUTHORIZED);
     }
+
 }

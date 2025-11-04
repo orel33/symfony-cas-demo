@@ -30,7 +30,7 @@ On peut ensuite consulter la page web <htttp://localhost:8000/hello> qui est pro
 
 * PHP ≥ 8.1
 * Composer
-* Symfony CLI (facultatif mais pratique)
+* Symfony 6 & Symfony CLI
 * Serveur CAS de test
 
 ```bash

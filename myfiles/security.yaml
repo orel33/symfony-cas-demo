@@ -3,7 +3,11 @@ security:
 
   providers:
     app_user_provider:
-      memory: ~ # Pas de base de données, juste utilisateur CAS
+      # memory: ~ # pas de base de données (utilisateurs en mémoire)
+      memory:
+        users:
+          toto: { roles: ['ROLE_USER'] }
+          admin: { roles: ['ROLE_USER', 'ROLE_ADMIN'] }
 
   firewalls:
 
@@ -19,22 +23,31 @@ security:
 
     # Firewall principal protégé par CAS
     main:
-      pattern: ^/
       lazy: true
       provider: app_user_provider
-      custom_authenticators:
-        - App\Security\CasAuthenticator
+      custom_authenticator: App\Security\CasAuthenticator
       logout:
-        path: /logout
-        target: /
+        path: app_logout
+      
+    # main:
+    #   pattern: ^/
+    #   lazy: true
+    #   provider: app_user_provider
+    #   custom_authenticators:
+    #     - App\Security\CasAuthenticator
+    #   logout:
+    #     path: /logout
+    #     target: /
 
   access_control:
+
     # Autoriser tout le monde sur la page d'accueil
     - { path: ^/$, roles: PUBLIC_ACCESS }
     # Protéger la route /hello
     - { path: ^/hello, roles: ROLE_USER }
     # Protéger tout le reste
     - { path: ^/.*, roles: ROLE_USER }
-
+    
+    # - { path: ^/, roles: ROLE_USER }
     # - { path: ^/, roles: PUBLIC_ACCESS }
     # - { path: ^/$, roles: IS_AUTHENTICATED_ANONYMOUSLY }
