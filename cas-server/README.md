@@ -65,7 +65,7 @@ $ openssl pkcs12 -info -in cas-keystore.p12 -nodes
 $ keytool -list -keystore cas-keystore.p12 
 ```
 
-Les certificats générés sont disponibles dans [myfiles/certs](myfiles/certs) et le fichier P12 doit être installé dans le répertoire `/etc/cas/ssl/` du serveur CAS.
+Les certificats générés sont disponibles dans [certs](certs) et le fichier P12 doit être installé dans le répertoire `/etc/cas/ssl/` du serveur CAS.
 
 Il faut encore modifier les lignes suivantes dans le fichier `application.properties` du serveur CAS : 
 
