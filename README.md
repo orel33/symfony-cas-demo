@@ -2,12 +2,36 @@
 
 *Avertissement : Il reste des **TODO** dans ce tutoriel, notamment pour utiliser la démo en HTTPS côté serveur Web (Symfony) et côté serveur CAS.*
 
+
+## Demo Rapide
+
+Pour lancer le serveur CAS (Docker) sur <http://localhost:9000/cas>, il suffit de lancer le script suivant : 
+
+```bash
+$ ./start-cas-server.sh
+```
+
+L'application web qui teste le CAS se trouve dans le sous-répertoire `cas-demo`. On commence par installer les dépendances.
+
+```bash
+$ cd cas-demo
+$ composer install
+```
+
+Pour lancer le serveur web en mode *dev* et sans HTTPS :
+
+```bash
+$ symfony serve -vvv --no-tls
+```
+
+On peut ensuite consulter la page web <htttp://localhost:8000/hello> qui est protégé par une authentification CAS.
+
 ## Prérequis
 
 * PHP ≥ 8.1
 * Composer
 * Symfony CLI (facultatif mais pratique)
-* Serveur CAS disponible (réel ou de test, ex. un CAS de dev universitaire)
+* Serveur CAS de test
 
 ```bash
 $ sudo apt install composer
@@ -183,7 +207,7 @@ $ symfony server:status
 
 ## Mise en place d'un serveur CAS avec Docker
 
-Lancons le serveur CAS en local avec le Docker fourni par *Apereo*.
+Lancons le serveur CAS en local avec le Docker fourni par [Apereo](https://hub.docker.com/r/apereo/cas/tags).
 
 ```bash
 $ docker run --rm -e SERVER_SSL_ENABLED=false -e SERVER_PORT=9000 -p 9000:9000 --name cas-server apereo/cas:7.3.0
