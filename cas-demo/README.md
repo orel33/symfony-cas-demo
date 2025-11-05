@@ -138,7 +138,7 @@ CAS_CONTEXT=/cas
 
 ### Configuration du CAS
 
-On modifie les lignes suivantes dans le fichier [CasAuthenticator.php](myfiles/CasAuthenticator.php) :
+On modifie les lignes suivantes dans le fichier [CasAuthenticator.php](src/Security/CasAuthenticator.php) :
 
 ```php
 $redirecturl = 'http://localhost:8000'; // URL de retour après authentification
