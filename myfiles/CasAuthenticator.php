@@ -9,9 +9,9 @@ use Symfony\Component\Security\Http\Authenticator\AbstractAuthenticator;
 use Symfony\Component\Security\Http\Authenticator\Passport\SelfValidatingPassport;
 use Symfony\Component\Security\Http\Authenticator\Passport\Badge\UserBadge;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
-
-use App\Entity\User;
-
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
+use phpCAS;
 
 class CasAuthenticator extends AbstractAuthenticator
 {
@@ -29,6 +29,14 @@ class CasAuthenticator extends AbstractAuthenticator
 
     public function authenticate(Request $request): SelfValidatingPassport
     {
+        // Accès aux variables d'environnement
+        // $hostname = $this->params->get('CAS_SERVER_HOSTNAME');
+        // $port = $this->params->get('CAS_SERVER_PORT');
+        // $uri = $this->params->get('CAS_SERVER_URI');
+
+        // error_log("CAS Config - Hostname: $hostname, Port: $port, URI: $uri");
+
+
         if (session_status() === PHP_SESSION_NONE) { // useful ?
             session_start();
         }
@@ -39,6 +47,8 @@ class CasAuthenticator extends AbstractAuthenticator
         \phpCAS::setDebug('/tmp/phpcas.log');
         $redirect_url = 'http://localhost:8000/hello'; # URL de retour après authentification
         \phpCAS::client(CAS_VERSION_2_0, 'localhost', 9000, '/cas', $redirect_url);
+
+        // Désactive la validation du serveur CAS (pour les tests en local)
         \phpCAS::setNoCasServerValidation(); // accepte les certificats auto-signés (test en local uniquement)
 
         // Forcer manuellement l'URL de service en HTTP (utile en dev local)
@@ -56,25 +66,16 @@ class CasAuthenticator extends AbstractAuthenticator
         error_log('[CAS] Utilisateur authentifié : ' . $username);
 
         $passeport = new SelfValidatingPassport(new UserBadge($username));
-         
         return $passeport;
-
-        // Crée un utilisateur "virtuel" pour Symfony
-        // return new SelfValidatingPassport(
-        //     new UserBadge($username, function (string $userIdentifier) {
-        //         // Création à la volée d’un utilisateur (aucune BD requise)
-        //         return new User($userIdentifier, ['ROLE_USER']);
-        //     })
-        // );
     }
 
-    // 
 
-    public function onAuthenticationSuccess(Request $request, $token, string $firewallName): ?Response
+
+    public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
     {
         error_log('[CAS] onAuthenticationSuccess appelé');
+        // return new Response('Bienvenue sur la page protégée', Response::HTTP_OK);
         // return new RedirectResponse($this->router->generate('app_hello'));
-        // Redirige vers la page d’accueil après succès
         return null; // continue la requête normalement
     }
 

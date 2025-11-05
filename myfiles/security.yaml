@@ -3,7 +3,6 @@ security:
 
   providers:
     app_user_provider:
-      # memory: ~ # pas de base de données (utilisateurs en mémoire)
       memory:
         users:
           toto: { roles: ['ROLE_USER'] }
@@ -11,43 +10,24 @@ security:
 
   firewalls:
 
-    # Firewall dev : pas de sécurité pour les assets
     dev:
       pattern: ^/(_(profiler|wdt)|css|images|js)/
       security: false
 
-    # Firewall public : pas de sécurité pour /
     public:
       pattern: ^/$
       security: false
 
-    # Firewall principal protégé par CAS
     main:
+      # pattern: ^/
+      # pattern: ^/hello
       lazy: true
       provider: app_user_provider
       custom_authenticator: App\Security\CasAuthenticator
-      logout:
-        path: app_logout
+      logout: { path: /logout, target: / }
       
-    # main:
-    #   pattern: ^/
-    #   lazy: true
-    #   provider: app_user_provider
-    #   custom_authenticators:
-    #     - App\Security\CasAuthenticator
-    #   logout:
-    #     path: /logout
-    #     target: /
-
   access_control:
-
-    # Autoriser tout le monde sur la page d'accueil
     - { path: ^/$, roles: PUBLIC_ACCESS }
-    # Protéger la route /hello
     - { path: ^/hello, roles: ROLE_USER }
-    # Protéger tout le reste
     - { path: ^/.*, roles: ROLE_USER }
     
-    # - { path: ^/, roles: ROLE_USER }
-    # - { path: ^/, roles: PUBLIC_ACCESS }
-    # - { path: ^/$, roles: IS_AUTHENTICATED_ANONYMOUSLY }

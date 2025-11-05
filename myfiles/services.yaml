@@ -9,9 +9,7 @@ services:
 
 
     App\Security\CasAuthenticator:
-        arguments:
-            $router: '@router'
-        tags:
-            - { name: 'monolog.logger' } # optionnel
+        autowire: true
+        autoconfigure: true
 
 

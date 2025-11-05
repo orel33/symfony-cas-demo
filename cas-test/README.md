@@ -21,13 +21,15 @@ composer install
 Pour lancer le serveur CAS (Docker) sur <http://localhost:9000/cas>, il suffit de lancer le script suivant, qui se trouve dans le sous-répertoire `cas-server/` : 
 
 ```bash
+$ cd cas-server
 $ ./start-cas-server.sh
 ```
 
 Pour lancer le serveur en local sur le port 8000 :
 
 ```bash
-php -S localhost:8000
+$ cd cas-test
+$ php -S localhost:8000
 ```
 
 Le fichier `test-cas.php` sera accessible à l'adresse : <http://localhost:8000/test-cas.php>
