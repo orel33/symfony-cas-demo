@@ -27,6 +27,13 @@ On peut ensuite consulter la page web <htttp://localhost:8000/hello> qui est pro
 
 ## Création du projet Symfony
 
+Voici la liste des fichiers qu'il faudra ajouter / corriger dans ce projet :
+
+* [src/Controller/HelloController.php](src/Controller/HelloController.php)
+* [src/Security/CasAuthenticator.php](src/Security/CasAuthenticator.php) 
+* [config/services.yaml](config/services.yaml)
+* [config/packages/security.yaml](config/packages/security.yaml)
+
 ### Configuration initiale
 
 Prérequis :
