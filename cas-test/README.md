@@ -1,21 +1,28 @@
-# Test CAS Client en PHP
+# Test CAS en PHP
 
-Ce projet est un exemple simple de client CAS (Central Authentication Service) utilisant PHP avec un seul fichier de test, sans le framework *Symfony*.
+Ce projet est un exemple simple d'application web, qui est un client CAS, utilisant du PHP "pure" avec un seul fichier de test.
 
-## Prérequis
+## Installation
+
+Prérequis : 
 
 - PHP 7.4 ou supérieur
 - Composer
 
-## Installation
-
-Installer les dépendances avec Composer :
+Installation des dépendances PHP à partir de `composer.json` dans `vendor/` :
 
 ```bash
+cd cas-test
 composer install
 ```
 
-## Lancement du serveur Web (HTTP)
+## Test Rapide
+
+Pour lancer le serveur CAS (Docker) sur <http://localhost:9000/cas>, il suffit de lancer le script suivant, qui se trouve dans le sous-répertoire `cas-server/` : 
+
+```bash
+$ ./start-cas-server.sh
+```
 
 Pour lancer le serveur en local sur le port 8000 :
 
@@ -25,15 +32,7 @@ php -S localhost:8000
 
 Le fichier `test-cas.php` sera accessible à l'adresse : <http://localhost:8000/test-cas.php>
 
-## Lancement du serveur CAS (HTTP)
-
-Au préalable, il faudra lancer le serveur CAS sur <http://localhost:9000/cas> en utlisant le script *Docker* fourni à la racine de ce dépôt.
-
-```bash
-./start-cas-server.sh
-```
-
-## Debug
+Debug :
 
 ```bash
 tail -f phpcas.log
@@ -51,4 +50,3 @@ composer init --name=test/cas-client \
     --require="apereo/phpcas:^1.6" \
     --no-interaction
 ```
-

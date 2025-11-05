@@ -24,7 +24,7 @@ Pour tester le serveur CAS, consultez l'URL <http://localhost:9000/cas/login> av
 
 **TODO**: Comment vérifier que le service est bien enregistré ?
 
-## Image Docker officiel
+## Test de l'image Docker officielle
 
 Pour lancer l'image Docker officielle (sans les configurations ci-dessus) :
 
@@ -84,5 +84,3 @@ server.ssl.key-store-password=pouet
 On peut relancer le serveur Docker en lui passant l'opton `-v $(pwd)/myfiles/certs/cas-keystore.p12:/etc/cas/ssl/cas-keystore.p12`...
 
 **BUG** : mais ça ne marche pas avec une sombre erreur de *padding* au chargement du certificat P12 !
-
----
