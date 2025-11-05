@@ -11,6 +11,9 @@ class HelloController extends AbstractController
     public function hello(): Response
     {
         $username = \phpCAS::getUser();
+
+        // TODO: rajouter un lien vers logout
+
         return new Response('<h1>Hello ' . htmlspecialchars($username) . ' !</h1>');
     }
 
@@ -20,3 +23,6 @@ class HelloController extends AbstractController
         throw new \Exception('Cette méthode peut rester vide.');
     }
 }
+
+
+
