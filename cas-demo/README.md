@@ -32,6 +32,7 @@ Voici la liste des fichiers qu'il faudra ajouter / modifier dans ce projet :
 * [src/Security/CasAuthenticator.php](src/Security/CasAuthenticator.php) 
 * [config/services.yaml](config/services.yaml)
 * [config/packages/security.yaml](config/packages/security.yaml)
+* [.env](.env)
 
 ### Configuration initiale
 
@@ -155,6 +156,8 @@ Maintenant, lorsqu'on essaie d'accéder à la page <http://localhost:8000/hello>
 **Bug** : Symfony se redirige *obligatoirement* vers le serveur CAS en HTTPS.
 
 Si le service web `localhost` n'est pas enregistré auprès du CAS, on obtient l'erreur *Application Not Authorized to Use CAS*.
+
+Pour simplifier la configuration du code, nous utilisons des variables d'environnement définis dans le fichier [.env](.env).
 
 ---
 

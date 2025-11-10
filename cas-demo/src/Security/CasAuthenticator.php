@@ -29,35 +29,36 @@ class CasAuthenticator extends AbstractAuthenticator
 
     public function authenticate(Request $request): SelfValidatingPassport
     {
-        // Accès aux variables d'environnement
-        // $hostname = $this->params->get('CAS_SERVER_HOSTNAME');
-        // $port = $this->params->get('CAS_SERVER_PORT');
-        // $uri = $this->params->get('CAS_SERVER_URI');
-
-        // error_log("CAS Config - Hostname: $hostname, Port: $port, URI: $uri");
-
-
-        if (session_status() === PHP_SESSION_NONE) { // useful ?
-            session_start();
-        }
-
         error_log('[CAS] Début de l’authentification CAS');
 
-        // Initialisation phpCAS
+        if (session_status() === PHP_SESSION_NONE)
+            session_start();
+
+
         \phpCAS::setDebug('/tmp/phpcas.log');
+
+        // Accès direct aux variables d'environnement
+        $cas_hostname = $_ENV['CAS_SERVER_HOSTNAME'] ?? 'localhost';
+        $cas_port = $_ENV['CAS_SERVER_PORT'] ?? '9000';
+        $cas_uri = $_ENV['CAS_SERVER_URI'] ?? '/cas';
+
+        // Construire l'URL du serveur CAS
+        // $cas_url = 'http://localhost:9000/cas';
+        $cas_url = "http://$cas_hostname:$cas_port$cas_uri";
+        error_log('CAS URL: ' . $cas_url);
+
         $redirect_url = 'http://localhost:8000/hello'; # URL de retour après authentification
-        \phpCAS::client(CAS_VERSION_2_0, 'localhost', 9000, '/cas', $redirect_url);
+        // \phpCAS::client(CAS_VERSION_2_0, 'localhost', 9000, '/cas', $redirect_url);
+        \phpCAS::client(CAS_VERSION_2_0, $cas_hostname, (int) $cas_port, $cas_uri, $redirect_url);
 
         // Désactive la validation du serveur CAS (pour les tests en local)
         \phpCAS::setNoCasServerValidation(); // accepte les certificats auto-signés (test en local uniquement)
 
         // Forcer manuellement l'URL de service en HTTP (utile en dev local)
         \phpCAS::setFixedServiceURL($redirect_url);
-        \phpCAS::setServerLoginURL('http://localhost:9000/cas/login?service=' . urlencode($redirect_url));
-        \phpCAS::setServerServiceValidateURL('http://localhost:9000/cas/serviceValidate');
-        \phpCAS::setServerLogoutURL('http://localhost:9000/cas/logout');
-        // $logout_url = 'http://localhost:8000/'; // URL de redirection après déconnexion
-        // \phpCAS::setServerLogoutURL('http://localhost:9000/cas/logout?service=' . urlencode($logout_url));
+        \phpCAS::setServerLoginURL($cas_url . '/login?service=' . urlencode($redirect_url));
+        \phpCAS::setServerServiceValidateURL($cas_url . '/serviceValidate');
+        \phpCAS::setServerLogoutURL($cas_url . '/logout');
 
         // Vérifie si l'utilisateur est authentifié, sinon redirige vers le CAS
         \phpCAS::forceAuthentication();
@@ -68,8 +69,6 @@ class CasAuthenticator extends AbstractAuthenticator
         $passeport = new SelfValidatingPassport(new UserBadge($username));
         return $passeport;
     }
-
-
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
     {
