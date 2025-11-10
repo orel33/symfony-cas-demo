@@ -146,14 +146,13 @@ $redirecturl = 'http://localhost:8000'; // URL de retour après authentification
 \phpCAS::setNoCasServerValidation(); // ne vérifie pas la CA du certificat du serveur CAS (test en local uniquement)
 ```
 
-Maintenant, lorsqu'on essaie d'accéder à la page <http://localhost:8000/hello> de notre application web Symfony, celle-ci délègue au serveur CAS l'authentification <http://localhost:9000/cas>. Le scénario est le suivant : 
+Maintenant, lorsqu'on essaie d'accéder à la page <http://localhost:8000/hello> de notre application web, Symfony délègue au serveur CAS l'authentification <http://localhost:9000/cas>. Le scénario est le suivant : 
 
 1. Consultation de la page : <http://localhost:8000/hello> 
 2. Redirection vers le serveur CAS : <http://localhost:9000/cas/login?service=http%3A%2F%2Flocalhost%3A8000%2Fhello>
-3. Saisie des identifiants auprès du serveur CAS.
-4. Si l'authentification est réussie (et que le service est reconnu), alors le serveur CAS nos redirige sur l'URL de retour <http://localhost:8000/hello>.
-
-Si le service web `localhost` n'est pas enregistré auprès du CAS, on obtient l'erreur *Application Not Authorized to Use CAS*.
+3. Saisie des identifiants auprès du serveur CAS (`toto:toto`)
+4. Si l'authentification est réussie (et que le service `localhost` est reconnu), alors le serveur CAS nous redirige sur l'URL de retour <http://localhost:8000/hello>. 
+5. Si le service web `localhost` n'est pas enregistré auprès du CAS, on obtient l'erreur *Application Not Authorized to Use CAS*.
 
 Pour simplifier la configuration du code, nous utilisons des variables d'environnement définis dans le fichier [.env](.env).
 
