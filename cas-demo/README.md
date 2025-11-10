@@ -153,11 +153,22 @@ Maintenant, lorsqu'on essaie d'accéder à la page <http://localhost:8000/hello>
 3. Saisie des identifiants auprès du serveur CAS.
 4. Si l'authentification est réussie (et que le service est reconnu), alors le serveur CAS nos redirige sur l'URL de retour <http://localhost:8000/hello>.
 
-**Bug** : Symfony se redirige *obligatoirement* vers le serveur CAS en HTTPS.
-
 Si le service web `localhost` n'est pas enregistré auprès du CAS, on obtient l'erreur *Application Not Authorized to Use CAS*.
 
 Pour simplifier la configuration du code, nous utilisons des variables d'environnement définis dans le fichier [.env](.env).
+
+## Version HTTPS
+
+**BUG** : Par défaut, Symfony se redirige vers le serveur CAS en HTTPS. Du coup, comme cette version est en HTTP uniquement, il faut forcer manuellement les URLs vers HTTP.
+
+```php
+\phpCAS::setFixedServiceURL($redirect_url);
+\phpCAS::setServerLoginURL($cas_url . '/login?service=' . urlencode($redirect_url));
+\phpCAS::setServerServiceValidateURL($cas_url . '/serviceValidate');
+\phpCAS::setServerLogoutURL($cas_url . '/logout');
+```
+
+**TODO** : En pratique, il faudrait corriger le code de cette démo pour utiliser nativement HTTPS avec un certificat autosigné. A suivre...
 
 ---
 
