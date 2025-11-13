@@ -10,10 +10,8 @@ class HelloController extends AbstractController
     #[Route('/hello', name: 'app_hello')]
     public function hello(): Response
     {
+        // direct response for simplicity, without using a Twig template
         $username = \phpCAS::getUser();
-
-        // TODO: rajouter un lien vers logout
-
         return new Response('<h1>Hello ' . htmlspecialchars($username) . ' !</h1>');
     }
 

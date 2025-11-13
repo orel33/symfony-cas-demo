@@ -24,7 +24,7 @@ class CasAuthenticator extends AbstractAuthenticator
 
     public function supports(Request $request): ?bool
     {
-        return true;
+        return true; // toujours activer l'authentification CAS
     }
 
     public function authenticate(Request $request): SelfValidatingPassport
