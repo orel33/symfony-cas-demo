@@ -81,9 +81,7 @@ $ php bin/console make:controller HelloController
 * On lance le serveur avec la commande `symfony serve -vvv`.
 * On peut alors consulter cette page sur <http://localhost:8000/hello>.
 
-**TODO** : Faut-il aussi éditer le fichier `config/services.yaml` ?
-
-### Configuration du CAS
+### Installation de phpCAS
 
 On veut maintenant protéger l'accès à la page *hello* via le CAS. L'application *Symfony* joue donc le rôle d'un client CAS, ce qui suppose que l'on dispose d'un serveur CAS en place.
 
@@ -127,16 +125,7 @@ Par défaut, Symfony CLI lance le serveur en mode *dev* :
 $ symfony serve -vvv --no-tls
 ```
 
-**TODO** : On pourrait aussi stocker les infos du serveur CAS dans `.env` ou `.env.local` pour avoir un code plus joli :
-
-```
-APP_ENV=dev
-CAS_HOST=cas.example.com
-CAS_PORT=443
-CAS_CONTEXT=/cas
-```
-
-### Configuration du CAS
+### Configuration du Client CAS
 
 On modifie les lignes suivantes dans le fichier [CasAuthenticator.php](src/Security/CasAuthenticator.php) :
 
@@ -156,16 +145,27 @@ Maintenant, lorsqu'on essaie d'accéder à la page <http://localhost:8000/hello>
 
 Pour simplifier la configuration du code, nous utilisons des variables d'environnement définis dans le fichier [.env](.env).
 
-## Version HTTPS
+```bash
+CAS_SERVER_HOSTNAME=localhost
+CAS_SERVER_PORT=9000
+CAS_SERVER_URI=/cas
+```
 
-**BUG** : Par défaut, Symfony se redirige vers le serveur CAS en HTTPS. Du coup, comme cette version est en HTTP uniquement, il faut forcer manuellement les URLs vers HTTP.
+On peut ensuite récupérer la valeur de ses variables en PHP avec `$_ENV['CAS_SERVER_HOSTNAME']`.
+
+**BUG** : Par défaut, Symfony se redirige vers le serveur CAS en HTTPS, même en utilisant l'option `--no-tls`. Du coup, comme cette version est en HTTP uniquement, il faut forcer manuellement les URLs vers HTTP.
 
 ```php
+$cas_url = 'http://localhost:9000/cas';
+$redirect_url = 'http://localhost:8000/hello';
+
 \phpCAS::setFixedServiceURL($redirect_url);
 \phpCAS::setServerLoginURL($cas_url . '/login?service=' . urlencode($redirect_url));
 \phpCAS::setServerServiceValidateURL($cas_url . '/serviceValidate');
 \phpCAS::setServerLogoutURL($cas_url . '/logout');
 ```
+
+## Version HTTPS
 
 **TODO** : En pratique, il faudrait corriger le code de cette démo pour utiliser nativement HTTPS avec un certificat autosigné. A suivre...
 
