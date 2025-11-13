@@ -47,16 +47,21 @@ class CasAuthenticator extends AbstractAuthenticator
         $cas_url = "http://$cas_hostname:$cas_port$cas_uri";
         error_log('CAS URL: ' . $cas_url);
 
-        $redirect_url = 'http://localhost:8000/hello'; # URL de retour après authentification
-        // \phpCAS::client(CAS_VERSION_2_0, 'localhost', 9000, '/cas', $redirect_url);
-        \phpCAS::client(CAS_VERSION_2_0, $cas_hostname, (int) $cas_port, $cas_uri, $redirect_url);
+        # $service_url = 'http://localhost:8000/hello';     # URL du service (retour après authentification)
+        $service_base_url = 'http://localhost:8000/';            # URL du service (retour après authentification)
+        error_log('phpcas Service BASE URL: ' . $service_base_url);
+        # \phpCAS::client(CAS_VERSION_2_0, 'localhost', 9000, '/cas', $service_url);
+        \phpCAS::client(CAS_VERSION_2_0, $cas_hostname, (int) $cas_port, $cas_uri, $service_base_url, false);
 
         // Désactive la validation du serveur CAS (pour les tests en local)
         \phpCAS::setNoCasServerValidation(); // accepte les certificats auto-signés (test en local uniquement)
 
+        $service_url = \phpCAS::getServiceURL();
+        error_log('[CAS] phpcas service URL: ' . $service_url);
+
         // Forcer manuellement l'URL de service en HTTP (utile en dev local)
-        \phpCAS::setFixedServiceURL($redirect_url);
-        \phpCAS::setServerLoginURL($cas_url . '/login?service=' . urlencode($redirect_url));
+        \phpCAS::setFixedServiceURL($service_url);
+        \phpCAS::setServerLoginURL($cas_url . '/login?service=' . urlencode($service_url));
         \phpCAS::setServerServiceValidateURL($cas_url . '/serviceValidate');
         \phpCAS::setServerLogoutURL($cas_url . '/logout');
 
@@ -81,7 +86,9 @@ class CasAuthenticator extends AbstractAuthenticator
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception): ?Response
     {
         error_log('[CAS] onAuthenticationFailure appelé');
+        // return new RedirectResponse('/');
         return new Response('Erreur CAS : ' . $exception->getMessage(), Response::HTTP_UNAUTHORIZED);
+
     }
 
 }

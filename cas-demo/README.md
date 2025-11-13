@@ -26,13 +26,14 @@ On peut ensuite consulter la page web <htttp://localhost:8000/hello> qui est pro
 
 ## Création du projet Symfony
 
-Voici la liste des fichiers qu'il faudra ajouter / modifier dans ce projet :
+Voici la liste des fichiers qu'il faudra ajouter et/ou modifier dans ce projet :
 
-* [src/Controller/HelloController.php](src/Controller/HelloController.php)
-* [src/Security/CasAuthenticator.php](src/Security/CasAuthenticator.php) 
-* [config/services.yaml](config/services.yaml)
-* [config/packages/security.yaml](config/packages/security.yaml)
-* [.env](.env)
+* [src/Controller/HelloController.php](src/Controller/HelloController.php) => controller de la page `/hello` (rôle *user*)
+* [src/Controller/AdminController.php](src/Controller/AdminController.php) => controller de la page `/admin`  (rôle *admin*)
+* [src/Security/CasAuthenticator.php](src/Security/CasAuthenticator.php) => service d'authentification CAS
+* [config/services.yaml](config/services.yaml) => configuration des différents services *autowire* & *autoconfigure*
+* [config/packages/security.yaml](config/packages/security.yaml) => configuration de la sécurité...
+* [.env](.env) => variables d'environnement
 
 ### Configuration initiale
 
@@ -70,7 +71,7 @@ $ cd cas-demo
 $ composer require symfony/web-profiler-bundle symfony/twig-bundle symfony/security-bundle
 ```
 
-Création de la page *Hello World* :
+Création de la page `/hello` avec le rôle *user* :
 
 ```bash
 $ composer require symfony/maker-bundle --dev
@@ -80,6 +81,8 @@ $ php bin/console make:controller HelloController
 * Il faut ensuite remplacer le fichier [src/Controller/HelloController.php](src/Controller/HelloController.php), pour qu'il affiche une simple page *Hello World* associée à la route `/hello`.
 * On lance le serveur avec la commande `symfony serve -vvv`.
 * On peut alors consulter cette page sur <http://localhost:8000/hello>.
+
+Faire de même pour la page `/admin` avec le rôle *admin*.
 
 ### Installation de phpCAS
 
@@ -127,11 +130,30 @@ $ symfony serve -vvv --no-tls
 
 ### Configuration du Client CAS
 
-On modifie les lignes suivantes dans le fichier [CasAuthenticator.php](src/Security/CasAuthenticator.php) :
+Voici la doc de `\phpCAS::client()` dans la version 1.6.0+.
+
+```php
+    /**
+     * phpCAS client initializer.
+     *
+     * @param string                   $server_version    the version of the CAS server
+     * @param string                   $server_hostname   the hostname of the CAS server
+     * @param int                      $server_port       the port the CAS server is running on
+     * @param string                   $server_uri        the URI the CAS server is responding on
+     * @param string                   $service_base_url  the base URL (protocol, host and the
+     *                                                    optional port) of the CAS client.
+     * @param bool                     $changeSessionID   Allow phpCAS to change the session_id
+     * @param \SessionHandlerInterface $sessionHandler    the session handler
+     *
+     * @return void a newly created CAS_Client object.
+     */
+```
+
+Dans le fichier [CasAuthenticator.php](src/Security/CasAuthenticator.php), on modifie la fonction `authenticate()` :
 
 ```php
 $redirecturl = 'http://localhost:8000'; // URL de retour après authentification
-\phpCAS::client(CAS_VERSION_2_0, 'localhost', 9000, '/cas', $redirecturl); 
+\phpCAS::client(CAS_VERSION_2_0, 'localhost', 9000, '/cas', $redirecturl, false); 
 \phpCAS::setNoCasServerValidation(); // ne vérifie pas la CA du certificat du serveur CAS (test en local uniquement)
 ```
 
