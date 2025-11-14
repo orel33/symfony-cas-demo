@@ -38,34 +38,22 @@ class CasAuthenticator extends AbstractAuthenticator
 
         \phpCAS::setDebug('/tmp/phpcas.log');
 
-        // Accès direct aux variables d'environnement
+        // cas server configuration
         $cas_hostname = $_ENV['CAS_SERVER_HOSTNAME'] ?? 'localhost';
         $cas_port = $_ENV['CAS_SERVER_PORT'] ?? '9000';
         $cas_uri = $_ENV['CAS_SERVER_URI'] ?? '/cas';
-        
-        // Construire l'URL de base du serveur CAS
         $cas_url = "http://$cas_hostname:$cas_port$cas_uri/"; # don't forget trailing slash!
-        error_log('CAS URL: ' . $cas_url);
-        // $cas_url = 'http://localhost:9000/cas/';
 
-        $service_url = 'http://localhost:8000/';  # URL du service (retour après authentification)
-        # \phpCAS::client(CAS_VERSION_2_0, 'localhost', 9000, '/cas', $service_url);
-        \phpCAS::client(CAS_VERSION_2_0, $cas_hostname, (int) $cas_port, $cas_uri, $service_url);
-
-        // \phpCAS::setFixedServiceURL($service_url);
-
-        // FIXME: Dans phpCAS, CAS/Client.php : _getServerBaseURL() force l'URL du serveur CAS en HTTPS au lieu de HTTP dans cette démo.
+        // service configuration
+        $service_url = 'http://localhost:8000/';
+        
+        // initialize phpCAS
+        \phpCAS::client(CAS_VERSION_2_0, $cas_hostname, (int) $cas_port, $cas_uri, $service_url);     
         $client = \phpCAS::getCasClient();
-        $client->setBaseURL($cas_url); // overide CAS server base URL with http scheme (to avoid https forced in phpCAS)
-
-        // \phpCAS::setServerLoginURL($cas_url . '/login?service=' . urlencode($service_url));
-        // \phpCAS::setServerServiceValidateURL($cas_url . '/serviceValidate');
-        // \phpCAS::setServerLogoutURL($cas_url . '/logout');
-
-        // Désactive la validation du serveur CAS (pour les tests en local)
-        \phpCAS::setNoCasServerValidation(); // accepte les certificats auto-signés (test en local uniquement)
-
-        // Vérifie si l'utilisateur est authentifié, sinon redirige vers le CAS
+        $client->setBaseURL($cas_url);  // for HTTP CAS server (local CAS only)
+        \phpCAS::setNoCasServerValidation(); // accept self-signed certificates (local CAS only)
+        
+        // force CAS authentication
         \phpCAS::forceAuthentication();
 
         $username = \phpCAS::getUser();
@@ -77,15 +65,13 @@ class CasAuthenticator extends AbstractAuthenticator
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
     {
-        error_log('[CAS] onAuthenticationSuccess appelé');
-        // return new Response('Bienvenue sur la page protégée', Response::HTTP_OK);
-        // return new RedirectResponse($this->router->generate('app_hello'));
-        return null; // continue la requête normalement
+        error_log('[CAS] call onAuthenticationSuccess()');
+        return null; // continue
     }
 
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception): ?Response
     {
-        error_log('[CAS] onAuthenticationFailure appelé');
+        error_log('[CAS] call onAuthenticationFailure()');
         // return new RedirectResponse('/');
         return new Response('Erreur CAS : ' . $exception->getMessage(), Response::HTTP_UNAUTHORIZED);
 

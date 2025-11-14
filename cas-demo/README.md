@@ -1,6 +1,8 @@
 # Demo CAS avec Symfony
 
-Dans cette démo, nous utilisons le framework [Symfony](https://symfony.com/doc) pour programmer une application web, capable de protéger l'accès de la pahe `/hello` avec une authentification d'utilisateur délégué à un serveur CAS.
+Dans cette démo, nous utilisons le framework [Symfony](https://symfony.com/) (version 6.4) pour programmer une application web, qui utilise une authentification d'utilisateur auprès d'un serveur CAS.
+
+* Documentation de Symfony 6.4 : <https://symfony.com/doc/6.4/index.html>
 
 ## Démo Rapide
 
@@ -22,7 +24,11 @@ Pour lancer le serveur web en mode *dev* (et sans HTTPS) :
 $ symfony serve -vvv --no-tls
 ```
 
-On peut ensuite consulter la page web <htttp://localhost:8000/hello> qui est protégé par une authentification CAS.
+On peut ensuite consulter les pages web suivantes : 
+
+* <http://localhost:8000/>, accès public (pas d'authentification CAS) ;
+* <http://localhost:8000/hello>, authentification CAS requise avec le rôle *user* (`toto:toto`) ;
+* <http://localhost:8000/admin>, authentification CAS requise avec le rôle *admin* (`admin:admin`).
 
 ## Création du projet Symfony
 
@@ -84,6 +90,8 @@ $ php bin/console make:controller HelloController
 
 Faire de même pour la page `/admin` avec le rôle *admin*.
 
+TODO: Ajouter la page d'accueil `/` public.
+
 ### Installation de phpCAS
 
 On veut maintenant protéger l'accès à la page *hello* via le CAS. L'application *Symfony* joue donc le rôle d'un client CAS, ce qui suppose que l'on dispose d'un serveur CAS en place.
@@ -133,27 +141,22 @@ $ symfony serve -vvv --no-tls
 Voici la doc de `\phpCAS::client()` dans la version 1.6.0+.
 
 ```php
-    /**
-     * phpCAS client initializer.
-     *
-     * @param string                   $server_version    the version of the CAS server
-     * @param string                   $server_hostname   the hostname of the CAS server
-     * @param int                      $server_port       the port the CAS server is running on
-     * @param string                   $server_uri        the URI the CAS server is responding on
-     * @param string                   $service_base_url  the base URL (protocol, host and the
-     *                                                    optional port) of the CAS client.
-     * @param bool                     $changeSessionID   Allow phpCAS to change the session_id
-     * @param \SessionHandlerInterface $sessionHandler    the session handler
-     *
-     * @return void a newly created CAS_Client object.
-     */
+/**
+ * phpCAS client initializer.
+ *
+ * @param string  $server_version    the version of the CAS server
+ * @param string  $server_hostname   the hostname of the CAS server
+ * @param int     $server_port       the port the CAS server is running on
+ * @param string  $server_uri        the URI the CAS server is responding on
+ * @param string  $service_base_url  the base URL (protocol, host and the optional port) of the CAS client.
+ */
 ```
 
 Dans le fichier [CasAuthenticator.php](src/Security/CasAuthenticator.php), on modifie la fonction `authenticate()` :
 
 ```php
-$redirecturl = 'http://localhost:8000'; // URL de retour après authentification
-\phpCAS::client(CAS_VERSION_2_0, 'localhost', 9000, '/cas', $redirecturl, false); 
+$service_url = 'http://localhost:8000'; // URL de retour après authentification
+\phpCAS::client(CAS_VERSION_2_0, 'localhost', 9000, '/cas', $service_url); 
 \phpCAS::setNoCasServerValidation(); // ne vérifie pas la CA du certificat du serveur CAS (test en local uniquement)
 ```
 
@@ -175,16 +178,17 @@ CAS_SERVER_URI=/cas
 
 On peut ensuite récupérer la valeur de ses variables en PHP avec `$_ENV['CAS_SERVER_HOSTNAME']`.
 
-**BUG** : Par défaut, Symfony se redirige vers le serveur CAS en HTTPS, même en utilisant l'option `--no-tls`. Du coup, comme cette version est en HTTP uniquement, il faut forcer manuellement les URLs vers HTTP.
+**Notab Bene** : Par défaut, Symfony 1.6 se redirige vers le serveur CAS en HTTPS, même en utilisant l'option `--no-tls`. Du coup, notre serveur CAS de démo est uniquement accessible en HTTP, il faut forcer manuellement les URLs.
 
 ```php
-$cas_url = 'http://localhost:9000/cas';
-$redirect_url = 'http://localhost:8000/hello';
-
-\phpCAS::setFixedServiceURL($redirect_url);
-\phpCAS::setServerLoginURL($cas_url . '/login?service=' . urlencode($redirect_url));
-\phpCAS::setServerServiceValidateURL($cas_url . '/serviceValidate');
-\phpCAS::setServerLogoutURL($cas_url . '/logout');
+$cas_url = 'http://localhost:9000/cas/'; # with trailing slash
+# solution 1
+$client = \phpCAS::getCasClient();
+$client->setBaseURL($cas_url);
+# solution 2
+\phpCAS::setServerLoginURL($cas_url . 'login?service=' . urlencode($redirect_url));
+\phpCAS::setServerServiceValidateURL($cas_url . 'serviceValidate');
+\phpCAS::setServerLogoutURL($cas_url . 'logout');
 ```
 
 ## Version HTTPS
