@@ -46,18 +46,24 @@ class CasAuthenticator extends AbstractAuthenticator
 
         // service configuration
         $service_url = 'http://localhost:8000/';
-        
+
         // initialize phpCAS
-        \phpCAS::client(CAS_VERSION_2_0, $cas_hostname, (int) $cas_port, $cas_uri, $service_url);     
+        // \phpCAS::client(CAS_VERSION_2_0, $cas_hostname, (int) $cas_port, $cas_uri, $service_url);
+        \phpCAS::client(CAS_VERSION_3_0, $cas_hostname, (int) $cas_port, $cas_uri, $service_url);
         $client = \phpCAS::getCasClient();
-        $client->setBaseURL($cas_url);  // for HTTP CAS server (local CAS only)
-        \phpCAS::setNoCasServerValidation(); // accept self-signed certificates (local CAS only)
-        
+        $client->setBaseURL($cas_url);      // for HTTP CAS server (local CAS only)
+        \phpCAS::setNoCasServerValidation();     // accept self-signed certificates (local CAS only)
+
         // force CAS authentication
         \phpCAS::forceAuthentication();
 
         $username = \phpCAS::getUser();
-        error_log('[CAS] Utilisateur authentifié : ' . $username);
+        $attributes = \phpCAS::getAttributes(); // [only CAS 3.0]
+        print_r($attributes);
+        $mail = \phpCAS::getAttribute('mail');
+        // var_dump($username);
+        error_log('[CAS] User authenticated: ' . $username);
+        error_log('[CAS] Mail attribute: ' . $mail);
 
         $passeport = new SelfValidatingPassport(new UserBadge($username));
         return $passeport;
