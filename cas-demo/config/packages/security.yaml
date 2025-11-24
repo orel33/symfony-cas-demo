@@ -14,8 +14,12 @@ security:
       pattern: ^/(_(profiler|wdt)|css|images|js)/
       security: false
 
+    homepage:
+      pattern: ^/$  
+      security: false
+
     public:
-      pattern: ^/$
+      pattern: ^/public  
       security: false
 
     main:
@@ -27,8 +31,9 @@ security:
   
   # if firewalls are disable (security false), access_control is ignored!
   access_control:
-    - { path: ^/$, roles: PUBLIC_ACCESS }   # / is public
-    - { path: ^/admin, roles: ROLE_ADMIN }  # /admin requires ROLE_ADMIN
-    - { path: ^/hello, roles: ROLE_USER }   # /hello requires ROLE_USER 
-    - { path: ^/.*, roles: ROLE_USER }      # catch-all rule requires ROLE_USER
+    - { path: ^/$, roles: PUBLIC_ACCESS }        # / is public
+    - { path: ^/public, roles: PUBLIC_ACCESS }   # /public is public
+    - { path: ^/admin, roles: ROLE_ADMIN }       # /admin requires ROLE_ADMIN
+    - { path: ^/hello, roles: ROLE_USER }        # /hello requires ROLE_USER 
+    - { path: ^/.*, roles: ROLE_USER }           # catch-all rule requires ROLE_USER
     
