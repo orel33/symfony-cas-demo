@@ -30,6 +30,32 @@ On peut ensuite consulter les pages web suivantes :
 * <http://localhost:8000/hello>, authentification CAS requise avec le rôle *user* (`toto:toto`) ;
 * <http://localhost:8000/admin>, authentification CAS requise avec le rôle *admin* (`admin:admin`).
 
+## Déploiement dans Apache2
+
+Il faut commencer à copier `cas-demo/*` dans `/var/www/symfony/`.
+
+Puis il faut éditer le fichier `/etc/apache2/sites-available/000-default.conf` en ajoutant ceci à l’intérieur du `<VirtualHost>`
+
+```
+Alias /symfony /var/www/symfony/public
+
+<Directory /var/www/symfony/public>
+    AllowOverride All
+    Require all granted
+</Directory>
+```
+
+Ainsi le site sera consultable en local sur <http://localhost/symfony/>.
+
+On ajoute un fichier [public/.htaccess](public/.htaccess) si il n'est pas déjà fourni par le framework Symfony. Ce fichier *htaccess* indique à Apache2 de rediriger toutes les routes de notre projet vers le *frontend* `index.php`, sauf si le fichier existe vraiment. 
+
+Il ne faut pas oublier d'activer le mode *rewrite*... avant de redémarrer le serveur Apache2.
+
+```bash
+$ sudo a2enmod rewrite
+$ sudo systemctl restart apache2
+```
+
 ## Création du projet Symfony
 
 Voici la liste des fichiers qu'il faudra ajouter et/ou modifier dans ce projet :
@@ -82,13 +108,15 @@ Création de la page `/hello` avec le rôle *user* :
 ```bash
 $ composer require symfony/maker-bundle --dev
 $ php bin/console make:controller HelloController
+  created: src/Controller/HelloController.php
+  created: templates/hello/index.html.twig
 ```
 
 * Il faut ensuite remplacer le fichier [src/Controller/HelloController.php](src/Controller/HelloController.php), pour qu'il affiche une simple page *Hello World* associée à la route `/hello`.
-* On lance le serveur avec la commande `symfony serve -vvv`.
+* On lance le serveur avec la commande `symfony serve -vvv --no-tls`.
 * On peut alors consulter cette page sur <http://localhost:8000/hello>.
 
-Faire de même pour la page `/admin` avec le rôle *admin*.
+Faire de même pour la page `/admin` avec le rôle *admin* et `/public` avec un accès *public* non authentifié...
 
 TODO: Ajouter la page d'accueil `/` public.
 

@@ -1,0 +1,18 @@
+
+<IfModule mod_negotiation.c>
+    Options -MultiViews
+</IfModule>
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Répertoire projet dans un sous-dossier comme /symfony
+    RewriteBase /symfony
+
+    # Si le fichier demandé existe : on le sert directement
+    RewriteCond %{REQUEST_FILENAME} -f
+    RewriteRule ^ - [L]
+
+    # Sinon, on envoie tout vers index.php
+    RewriteRule ^ index.php [L]
+</IfModule>
