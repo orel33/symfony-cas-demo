@@ -9,8 +9,8 @@ require_once __DIR__ . '/vendor/autoload.php';
 $service = 'https://promo-st.emi.u-bordeaux.fr/'; 
 \phpCAS::setDebug();
 \phpCAS::client(CAS_VERSION_3_0, 'cas.u-bordeaux.fr', 443, '/cas', $service);
-\phpCAS::setNoCasServerValidation(); // accept self-signed certificates (local CAS only)
-// \phpCAS::setCasServerCACert();
+// \phpCAS::setNoCasServerValidation(); // accept self-signed certificates (local CAS only)
+\phpCAS::setCasServerCACert( __DIR__ . '/geant-ca.crt');
 \phpCAS::forceAuthentication();
 
 $user = \phpCAS::getUser();
