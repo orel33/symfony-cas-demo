@@ -30,31 +30,6 @@ On peut ensuite consulter les pages web suivantes :
 * <http://localhost:8000/hello>, authentification CAS requise avec le rôle *user* (`toto:toto`) ;
 * <http://localhost:8000/admin>, authentification CAS requise avec le rôle *admin* (`admin:admin`).
 
-## Déploiement dans Apache2
-
-Il faut commencer à copier `cas-demo/*` dans `/var/www/symfony/`.
-
-Puis il faut éditer le fichier `/etc/apache2/sites-available/000-default.conf` en ajoutant ceci à l’intérieur du `<VirtualHost>`
-
-```
-Alias /symfony /var/www/symfony/public
-
-<Directory /var/www/symfony/public>
-    AllowOverride All
-    Require all granted
-</Directory>
-```
-
-Ainsi le site sera consultable en local sur <http://localhost/symfony/>.
-
-On ajoute un fichier [public/.htaccess](public/.htaccess) si il n'est pas déjà fourni par le framework Symfony. Ce fichier *htaccess* indique à Apache2 de rediriger toutes les routes de notre projet vers le *frontend* `index.php`, sauf si le fichier existe vraiment. 
-
-Il ne faut pas oublier d'activer le mode *rewrite*... avant de redémarrer le serveur Apache2.
-
-```bash
-$ sudo a2enmod rewrite
-$ sudo systemctl restart apache2
-```
 
 ## Création du projet Symfony
 
@@ -67,35 +42,8 @@ Voici la liste des fichiers qu'il faudra ajouter et/ou modifier dans ce projet :
 * [config/packages/security.yaml](config/packages/security.yaml) => configuration de la sécurité...
 * [.env](.env) => variables d'environnement
 
-### Configuration initiale
 
-Prérequis :
-
-* PHP ≥ 8.1
-* Composer 2.2
-* Symfony 6 & Symfony CLI
-
-Installation de Symfony :
-
-```bash
-$ sudo apt install composer
-$ composer show symfony/framework-bundle
- version: v6.4.26
-```
-
-Installation de Symfony CLI : <https://symfony.com/download>
-
-```bash
-$ wget https://get.symfony.com/cli/installer -O - | bash
-  The Symfony CLI was installed successfully!
-  Use it as a local file: /home/orel/.symfony5/bin/symfony
-  Then start a new shell and run 'symfony'
-$ sudo cp /home/orel/.symfony5/bin/symfony /usr/local/bin/symfony
-$ symfony version
-  Symfony CLI version 5.15.1 (c) 2021-2025 Fabien Potencier (2025-10-04T08:05:57Z - stable)
-```
-
-### Initialisation du projet `cas-demo`
+On initialise le projet `cas-demo` :
 
 ```bash
 $ composer create-project symfony/skeleton cas-demo
@@ -119,6 +67,7 @@ $ php bin/console make:controller HelloController
 Faire de même pour la page `/admin` avec le rôle *admin* et `/public` avec un accès *public* non authentifié...
 
 TODO: Ajouter la page d'accueil `/` public.
+
 
 ### Installation de phpCAS
 

@@ -98,23 +98,77 @@ $ sudo service apache2 restart              # pour redémarrer Apache2
 $ sudo systemctl status apache2.service     # pour vérifier le statut d'Apache2 
 ```
 
-Si besoin de désactiver un ancien site, par exemple 000-default.conf :
+Si besoin, on peut désactiver un ancien site, par exemple `monsite.conf` :
 
 ```bash
 $ ls /etc/apache2/sites-enabled/   # pour lister les sites activés
-$ sudo a2dissite 000-default.conf  # pour désactiver le site
+$ sudo a2dissite monsite.conf  # pour désactiver le site
 ```
 
-Au final, vous pouvez consulter le sous-répertoire : <http://localhost/demo/> qui sera lister grâce à l'option `Indexes` activée dans la config.
-
+Au final, vous pouvez consulter <http://localhost/demo/> qui sera lister grâce à l'option `Indexes` activée dans la config.
 
 ## Accès en HTTPS 
 
+Pour activer le HTTPS dans Apache2, il faut activer le module `ssl` et redémarrer Apache2 :
 
 ```bash
 $ sudo a2enmod ssl
 $ sudo systemctl restart apache2
 ```
+
+Il faut ensuite créer un certificat auto-signé (pour test uniquement) :
+
+```bash
+$ sudo mkdir /etc/apache2/ssl
+$ sudo mkcert localhost
+$ mkcert -install
+```
+
+Puis on peut créer un Virtual Host pour le HTTPS, par exemple [default-ssl.conf](config/default-ssl.conf) à placer dans `/etc/apache2/sites-available/`.
+
+```
+<VirtualHost *:443>
+    # ServerName monsite.localhost
+    ServerAdmin webmaster@localhost
+    DocumentRoot /var/www/html/     
+    <Directory /var/www/html/>
+        Options Indexes FollowSymLinks MultiViews
+        AllowOverride All
+        Require all granted
+    </Directory>
+    SSLEngine on
+    SSLCertificateFile      "/etc/apache2/ssl/localhost.pem"
+    SSLCertificateKeyFile   "/etc/apache2/ssl/localhost-key.pem"
+    LogLevel debug info warn
+    ErrorLog ${APACHE_LOG_DIR}/error.log
+    CustomLog ${APACHE_LOG_DIR}/access.log combined
+</VirtualHost>
+```
+
+Pour activer ce Virtual Host, il faut faire comme précédemment.
+
+```bash
+$ sudo cp config/default-ssl.conf /etc/apache2/sites-available/
+$ sudo a2ensite default-ssl.conf
+$ sudo service apache2 restart
+```
+
+**Nota Bene** : vérifiez que `Listen 443` est bien présent dans `/etc/apache2/ports.conf`.
+
+On peut alors consulter le site web sécurisé : <https://localhost/>, mais attention votre navigateur va vous prévenir que le certificat n'est pas de confiance (car auto-signé).
+
+## Déploiement d'une application Symfony
+
+Pour déployer une application Symfony dans Apache2, il faut copier le contenu du répertoire `public/` de l'application Symfony dans le répertoire `/var/www/html/` d'Apache2.
+
+Par exemple, pour déployer l'application Symfony CAS Demo, on peut faire :
+
+```bash
+$ sudo rm -rf /var/www/html/*
+$ sudo cp -r /path/to/symfony-cas-demo/public/* /var/www/html/
+$ sudo chown -R www-data:www-data /var/www/html/
+```
+On peut alors consulter l'application Symfony : <http://localhost/>.
 
 ## Protection d'une page avec le CAS
 
@@ -126,13 +180,6 @@ $ sudo a2enmod auth_cas
 $ sudo systemctl restart apache2
 ```
 
-## Annexes
-
-Réinitialisation de Apache2, avec les fichiers de config `/etc/apache2/`...
-
-Lister les modules *Apache2* installés (`apache2ctl -M`) et les packages Debian associés...
-
-
-
+TODO: à finir...
 
 ---
