@@ -8,9 +8,8 @@ require_once __DIR__ . '/vendor/autoload.php';
 
 
 // Enable debugging
-// $logger = new \phpCAS\Logger\FileLogger(__DIR__ . '/cas.log', \phpCAS\Logger\LoggerInterface::DEBUG);
-// phpCAS::setLogger($logger);
-phpCAS::setDebug('/tmp/phpcas.log');
+$logger = new \phpCAS\Logger\FileLogger(__DIR__ . '/cas.log', \phpCAS\Logger\LoggerInterface::DEBUG);
+phpCAS::setLogger($logger);
 // Enable verbose error messages. Disable in production!
 phpCAS::setVerbose(true);
 
