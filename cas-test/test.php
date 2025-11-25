@@ -18,7 +18,8 @@ $service = 'https://promo-st.emi.u-bordeaux.fr/';
 
 // SSL validation
 // \phpCAS::setNoCasServerValidation(); // accept self-signed certificates (local CAS only)
-\phpCAS::setCasServerCACert(__DIR__ . '/geant-ca.crt');
+// \phpCAS::setCasServerCACert(__DIR__ . '/geant-ca.crt');
+\phpCAS::setCasServerCACert('/etc/ssl/certs/ca-certificates.crt');
 
 // Auth
 \phpCAS::forceAuthentication();
