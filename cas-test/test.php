@@ -32,8 +32,24 @@ $service = 'https://promo-st.emi.u-bordeaux.fr/';
 // Auth
 \phpCAS::forceAuthentication();
 
-// Debug user
-echo "<pre>";
-print_r(\phpCAS::getUser());
-print_r(\phpCAS::getAttributes());
-echo "</pre>";
+// logout if desired
+if (isset($_REQUEST['logout'])) {
+        phpCAS::logout();
+}
+
+// for this test, simply print that the authentication was successfull
+?>
+
+<html>
+  <head>
+    <title>Cas Test</title>
+  </head>
+  <body>
+    <h1>Successfull Authentication!</h1>
+    <p>Version <b><?php echo phpCAS::getVersion(); ?></b>.</p>
+    <p>User: <b><?php echo phpCAS::getUser(); ?></b>.</p>
+    <p>Attributes: <b><?php print_r(phpCAS::getAttributes()); ?></b>.</p>
+    <br>
+    <p><a href="?logout=">Logout</a></p>
+  </body>
+</html>
