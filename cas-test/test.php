@@ -34,6 +34,7 @@ if (isset($_REQUEST['logout'])) { phpCAS::logout(); }
 
 // for debug purposes, print the session array
 echo "<pre>";
+echo "Session data:\n";
 print_r($_SESSION['phpCAS']);
 echo "</pre>";
 
