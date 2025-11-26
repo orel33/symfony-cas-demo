@@ -1,19 +1,19 @@
 # Test CAS en PHP
 
-Ce projet est un exemple simple d'application web, qui est un client CAS, utilisant du PHP "pure" avec un seul fichier de test.
+Ce projet montre un exemple simple d'utilisation du serveur CAS `cas.u-bordeaux.fr` pour un service web `https://promo-st.emi.u-bordeaux.fr`.
+
+
+**Nota Bene** : Pour qu'un service web puisse utiliser un serveur CAS, il faut que ce service soit enregistré dans le serveur CAS. Dans notre cas, le service `https://promo-st.emi.u-bordeaux.fr` est déjà enregistré dans le serveur CAS `cas.u-bordeaux.fr`.
 
 ## Installation
 
-Prérequis : 
-
-- PHP 7.4 ou supérieur
-- Composer
+**Prérequis**  : PHP 8, Composer 2.8, phpCAS 1.6.
 
 Installation des dépendances PHP à partir de `composer.json` dans `vendor/` :
 
 ```bash
-cd cas-test
-composer install
+$ cd cas-test
+$ composer install
 ```
 
 Verification des versions installées :
@@ -29,29 +29,33 @@ $ composer show apereo/phpcas
 
 ```
 
-## Test Rapide
+## Test Université de Bordeaux
 
-Pour lancer le serveur CAS (Docker) sur <http://localhost:9000/cas>, il suffit de lancer le script suivant, qui se trouve dans le sous-répertoire `cas-server/` : 
+Pour réaliser ce test, il faut être membre de l'Université de Bordeaux, et avoir un compte (*idnum*) sur le serveur `cas.u-bordeaux.fr`.
+
+Le serveur de test est accessible à l'adresse : <https://promo-st.emi.u-bordeaux.fr/cas-test/test-ubx.php>
+
+Le code source de ce test est dans le fichier [test-ubx.php](test-ubx.php).
+
+## Test Docker
+
+Pour lancer le serveur CAS *Docker* sur <http://localhost:9000/cas>, il suffit de lancer le script suivant, qui se trouve dans le sous-répertoire `cas-server/` : 
 
 ```bash
 $ cd cas-server
 $ ./start-cas-server.sh
 ```
 
-Pour lancer le serveur en local sur le port 8000 :
+Pour lancer le service web sur `localhost:8000`, il suffit de lancer la commande suivante dans le répertoire `cas-test/` :
 
 ```bash
 $ cd cas-test
 $ php -S localhost:8000
 ```
 
-Le fichier `test-cas.php` sera accessible à l'adresse : <http://localhost:8000/test-cas.php>
+Le code source de ce test est dans le fichier [test-docker.php](test-docker.php) et utilise le serveur CAS *Docker* <http://localhost:9000/cas>.
 
-Debug :
-
-```bash
-tail -f phpcas.log
-```
+Pour réalise ce test, il faut consulter <http://localhost:8000/test-docker.php> avec votre navigateur web.
 
 ## Configuration initiale
 

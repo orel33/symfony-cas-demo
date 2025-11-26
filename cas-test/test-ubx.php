@@ -9,21 +9,21 @@ require_once __DIR__ . '/vendor/autoload.php';
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
 
-// Enable verbose error messages. Disable in production!
-\phpCAS::setVerbose(true);
-
 // Enable debugging
 $logger = new Logger('phpCAS');
 $logger->pushHandler(new StreamHandler('/var/log/phpcas/cas.log', Logger::DEBUG));
 \phpCAS::setLogger($logger);
 
-// Client CAS
-$service = 'https://promo-st.emi.u-bordeaux.fr/';
-\phpCAS::client(CAS_VERSION_3_0, 'cas.u-bordeaux.fr', 443, '/cas', $service);
+// Enable verbose error messages. Disable in production!
+\phpCAS::setVerbose(true);
 
-// SSL validation
-// \phpCAS::setNoCasServerValidation(); // accept self-signed certificates (local CAS only)
-// \phpCAS::setCasServerCACert(__DIR__ . '/geant-ca.crt');
+// Client CAS
+$server = 'cas.u-bordeaux.fr';
+$port = 443;
+$service = 'https://promo-st.emi.u-bordeaux.fr/';
+\phpCAS::client(CAS_VERSION_3_0, $server, $port, '/cas', $service);
+
+// Enable SSL validation (Geant CA Cert)
 \phpCAS::setCasServerCACert('/etc/ssl/certs/ca-certificates.crt');
 
 // Auth
@@ -33,19 +33,18 @@ $service = 'https://promo-st.emi.u-bordeaux.fr/';
 if (isset($_REQUEST['logout'])) { phpCAS::logout(); }
 
 // for debug purposes, print the session array
-echo "<pre>";
-echo "Session data:\n";
-print_r($_SESSION['phpCAS']);
-echo "</pre>";
+// echo "<pre>";
+// echo "Session data:\n";
+// print_r($_SESSION['phpCAS']);
+// echo "</pre>";
 
-
-
-// for this test, simply print that the authentication was successfull
 ?>
+
+<!-- html page -->
 
 <html>
   <head>
-    <title>Cas Test</title>
+    <title>Test CAS UBx</title>
   </head>
   <body>
     <h1>Successfull Authentication!</h1>
@@ -56,3 +55,4 @@ echo "</pre>";
     <p><a href="?logout=">Logout</a></p>
   </body>
 </html>
+
