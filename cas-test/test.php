@@ -16,9 +16,9 @@ use Monolog\Handler\StreamHandler;
 // Enable debugging
 $logger = new Logger('phpCAS');
 $logger->pushHandler(new StreamHandler('/tmp/cas.log', Logger::DEBUG));
-\phpCAS::setLogger($logger);
 $logger->debug("Logger OK !");
 $logger->info("Logger OK !");
+\phpCAS::setLogger($logger);
 
 // Client CAS
 $service = 'https://promo-st.emi.u-bordeaux.fr/';
