@@ -6,7 +6,6 @@ error_reporting(E_ALL);
 
 require_once __DIR__ . '/vendor/autoload.php';
 
-// composer require monolog/monolog
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
 
@@ -15,9 +14,8 @@ use Monolog\Handler\StreamHandler;
 
 // Enable debugging
 $logger = new Logger('phpCAS');
-$logger->pushHandler(new StreamHandler('/tmp/cas.log', Logger::DEBUG));
+$logger->pushHandler(new StreamHandler('/var/log/phpcas/cas.log', Logger::DEBUG));
 \phpCAS::setLogger($logger);
-
 
 // Client CAS
 $service = 'https://promo-st.emi.u-bordeaux.fr/';

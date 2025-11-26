@@ -65,3 +65,49 @@ composer init --name=test/cas-client \
     --require="apereo/phpcas:^1.6" \
     --no-interaction
 ```
+
+## Logger
+
+Les logs Apache2 / PHP sont écrits dans `/var/log/apache2/error.log`.
+
+```php
+error_log("test logger php!");
+```
+
+Dans notre cas, `phpCAS` utilise le logger *Monolog*, qu'il faut rajouter comme dépendance dans `composer.json` :
+
+```bash
+$ composer require monolog/monolog
+$ composer install
+```
+
+On peut ensuite utiliser ce *logger* directement comme cela : 
+
+```php
+use Monolog\Logger;
+use Monolog\Handler\StreamHandler;
+
+$logger = new Logger('phpCAS');
+$logger->pushHandler(new StreamHandler('/var/log/phpcas/cas.log', Logger::DEBUG));
+$logger->debug("test logger debug!");
+$logger->info("test loger info!");
+```
+
+Enfin, on peut passer ce logger à phpCAS pour qu'il l'utilise lui aussi.
+
+```php
+\phpCAS::setLogger($logger);
+\phpCAS::log("test logger phpCAS!");
+```
+
+Pour des raisons obscures, le logger *Monolog* échoue à créer un fichier dans `/tmp/` avec l'utilisateur Apache (www-data). Le plus simple pour contourner ce problème est de créer un répertoire`/var/log/phpcas/` avec des droits appropriés.
+
+```bash
+sudo mkdir /var/log/phpcas
+sudo chown www-data:www-data /var/log/phpcas
+sudo chmod 755 /var/log/phpcas
+```
+
+Voir le test du logger dans [test-log.php](test-log.php).
+
+---
