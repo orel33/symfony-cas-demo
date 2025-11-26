@@ -16,6 +16,19 @@ cd cas-test
 composer install
 ```
 
+Verification des versions installées :
+
+```bash
+$ php -v
+  PHP 8.4.11 (cli) (built: Aug  3 2025 07:32:21) (NTS)
+$ composer --version
+  Composer version 2.8.8 2025-04-04 16:56:46
+$ composer show apereo/phpcas
+  (...)
+  versions : * 1.6.1
+
+```
+
 ## Test Rapide
 
 Pour lancer le serveur CAS (Docker) sur <http://localhost:9000/cas>, il suffit de lancer le script suivant, qui se trouve dans le sous-répertoire `cas-server/` : 

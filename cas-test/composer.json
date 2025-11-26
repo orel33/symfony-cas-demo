@@ -3,7 +3,8 @@
     "description": "Test CAS client",
     "type": "project",
     "require": {
-        "apereo/phpcas": "^1.6"
+        "apereo/phpcas": "^1.6",
+        "monolog/monolog": "^3.9"
     },
     "authors": [
         {
