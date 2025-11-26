@@ -15,14 +15,10 @@ use Monolog\Handler\StreamHandler;
 
 // Enable debugging
 $logger = new Logger('phpCAS');
-// $logger->pushHandler(new StreamHandler(__DIR__ . '/cas.log', Logger::DEBUG));
 $logger->pushHandler(new StreamHandler('/tmp/cas.log', Logger::DEBUG));
 \phpCAS::setLogger($logger);
-// \phpCAS::setDebug('/tmp/phpcas.log'); // deprecated in favor of setLogger
-// test logging
-$logger->debug("Test direct du logger");
+$logger->debug("Logger OK !");
 $logger->info("Logger OK !");
-echo "Logger OK\n";
 
 // Client CAS
 $service = 'https://promo-st.emi.u-bordeaux.fr/';
