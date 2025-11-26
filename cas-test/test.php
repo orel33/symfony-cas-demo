@@ -22,6 +22,7 @@ $logger->pushHandler(new StreamHandler('/tmp/cas.log', Logger::DEBUG));
 // test logging
 $logger->debug("Test direct du logger");
 $logger->info("Logger OK !");
+echo "Logger OK\n";
 
 // Client CAS
 $service = 'https://promo-st.emi.u-bordeaux.fr/';
