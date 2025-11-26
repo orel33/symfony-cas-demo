@@ -12,14 +12,15 @@ use Monolog\Handler\StreamHandler;
 
 // Enable debugging
 $logger = new Logger('phpCAS');
-$logger->pushHandler(new StreamHandler('/tmp/cas.log', Logger::DEBUG));
+// $logger->pushHandler(new StreamHandler('/tmp/cas.log', Logger::DEBUG));
+$logger->pushHandler(new StreamHandler('/var/log/phpcas/cas.log', Logger::DEBUG));
 
 // test logging
 $logger->debug("Logger OK !");
 $logger->info("Logger OK !");
 error_log("Logger OK !");
 
-if (!is_writable('/tmp/cas.log')) {
+if (!is_writable('/var/log/phpcas/cas.log')) {
     error_log("cas.log n'est PAS accessible en écriture");
 }
 
