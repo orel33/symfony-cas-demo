@@ -16,17 +16,8 @@ use Monolog\Handler\StreamHandler;
 // Enable debugging
 $logger = new Logger('phpCAS');
 $logger->pushHandler(new StreamHandler('/tmp/cas.log', Logger::DEBUG));
-
-// test logs
-$logger->debug("Logger OK !");
-$logger->info("Logger OK !");
 \phpCAS::setLogger($logger);
-\phpCAS::log("Ceci est un test de phpCAS");
-error_log("Logger phpCAS installé");
 
-if (!is_writable('/tmp/cas.log')) {
-    error_log("cas.log n'est PAS accessible en écriture");
-}
 
 // Client CAS
 $service = 'https://promo-st.emi.u-bordeaux.fr/';
