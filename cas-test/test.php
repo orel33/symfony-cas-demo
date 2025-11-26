@@ -15,7 +15,7 @@ use Monolog\Handler\StreamHandler;
 
 // Enable debugging
 $logger = new Logger('phpCAS');
-$logger->pushHandler(new StreamHandler(__DIR__ . '/cas.log', Logger::DEBUG));
+$logger->pushHandler(new StreamHandler(__DIR__ . '/log/cas.log', Logger::DEBUG));
 \phpCAS::setLogger($logger);
 // \phpCAS::setDebug('/tmp/phpcas.log'); // deprecated in favor of setLogger
 
