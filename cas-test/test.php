@@ -19,6 +19,9 @@ $logger = new Logger('phpCAS');
 $logger->pushHandler(new StreamHandler('/tmp/cas.log', Logger::DEBUG));
 \phpCAS::setLogger($logger);
 // \phpCAS::setDebug('/tmp/phpcas.log'); // deprecated in favor of setLogger
+// test logging
+$logger->debug("Test direct du logger");
+$logger->info("Logger OK !");
 
 // Client CAS
 $service = 'https://promo-st.emi.u-bordeaux.fr/';
