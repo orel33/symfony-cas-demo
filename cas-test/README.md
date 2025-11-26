@@ -33,7 +33,7 @@ $ composer show apereo/phpcas
 
 Pour réaliser ce test, il faut être membre de l'Université de Bordeaux, et avoir un compte (*idnum*) sur le serveur `cas.u-bordeaux.fr`.
 
-Le serveur de test est accessible à l'adresse : <https://promo-st.emi.u-bordeaux.fr/cas-test/test-ubx.php>
+Le serveur de test est accessible à l'adresse : <https://promo-st.emi.u-bordeaux.fr/cas-test/test-ubx.php>. Mais il faut connaître son identifiant et mot de passe UBx pour aller plus loin...
 
 Le code source de ce test est dans le fichier [test-ubx.php](test-ubx.php).
 
@@ -55,7 +55,7 @@ $ php -S localhost:8000
 
 Le code source de ce test est dans le fichier [test-docker.php](test-docker.php) et utilise le serveur CAS *Docker* <http://localhost:9000/cas>.
 
-Pour réalise ce test, il faut consulter <http://localhost:8000/test-docker.php> avec votre navigateur web.
+Pour réaliser ce test, il faut consulter <http://localhost:8000/test-docker.php> avec votre navigateur web (login/password : `toto / toto`).
 
 ## Configuration initiale
 
