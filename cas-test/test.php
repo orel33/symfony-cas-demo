@@ -29,10 +29,19 @@ $service = 'https://promo-st.emi.u-bordeaux.fr/';
 // Auth
 \phpCAS::forceAuthentication();
 
+
+$xmlResponse = phpCAS::getResponse();
+file_put_contents('/var/log/phpcas/cas_response.xml', $xmlResponse);
+
 // logout if desired
-if (isset($_REQUEST['logout'])) {
-        phpCAS::logout();
-}
+if (isset($_REQUEST['logout'])) { phpCAS::logout(); }
+
+// for debug purposes, print the session array
+echo "<pre>";
+print_r($_SESSION['phpCAS']);
+echo "</pre>";
+
+
 
 // for this test, simply print that the authentication was successfull
 ?>
