@@ -18,7 +18,8 @@ $logger->pushHandler(new StreamHandler('/var/log/phpcas/cas.log', Logger::DEBUG)
 \phpCAS::setVerbose(true);
 
 // Client CAS
-$server = 'cas-test.u-bordeaux.fr';
+$server = 'cas.u-bordeaux.fr';
+// $server = 'cas-test.u-bordeaux.fr';
 $port = 443;
 $service = 'https://promo-st.emi.u-bordeaux.fr/';
 \phpCAS::client(CAS_VERSION_3_0, $server, $port, '/cas', $service);
