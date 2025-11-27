@@ -32,12 +32,6 @@ $service = 'https://promo-st.emi.u-bordeaux.fr/';
 // logout if desired
 if (isset($_REQUEST['logout'])) { phpCAS::logout(); }
 
-// for debug purposes, print the session array
-// echo "<pre>";
-// echo "Session data:\n";
-// print_r($_SESSION['phpCAS']);
-// echo "</pre>";
-
 ?>
 
 <!-- html page -->
@@ -47,10 +41,15 @@ if (isset($_REQUEST['logout'])) { phpCAS::logout(); }
     <title>Test CAS UBx</title>
   </head>
   <body>
-    <h1>Successfull Authentication!</h1>
-    <p>Version <b><?php echo phpCAS::getVersion(); ?></b>.</p>
-    <p>User: <b><?php echo phpCAS::getUser(); ?></b>.</p>
-    <p>Attributes: <b><?php print_r(phpCAS::getAttributes()); ?></b>.</p>
+    <h1>Test CAS UBx</h1>
+    <p>Server CAS: <?php echo $server; ?> (port <?php echo $port; ?>)</p>
+    <p>Service: <?php echo $service; ?></p>
+    <h2>Authentication success!</h2>
+    <p>User: <?php echo phpCAS::getUser(); ?></p>
+    <p>Mail: <?php echo phpCAS::getAttribute('mail'); ?></p>
+    <p>Name: <?php echo phpCAS::getAttribute('displayName'); ?></p>
+    <br>
+    <p>Attributes: <pre><?php print_r(phpCAS::getAttributes()); ?></pre></p>
     <br>
     <p><a href="?logout=">Logout</a></p>
   </body>
