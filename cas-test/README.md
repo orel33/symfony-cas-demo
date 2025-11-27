@@ -7,7 +7,13 @@ Ce projet montre un exemple simple d'utilisation du serveur CAS `cas.u-bordeaux.
 
 ## Installation
 
-**Prérequis**  : PHP 8, Composer 2.8, phpCAS 1.6.
+**Prérequis**  : Apache2, PHP 8, Composer 2.8, phpCAS 1.6.
+
+```bash
+$ sudo apt update
+$ sudo apt install apache2 php composer
+```
+
 
 Installation des dépendances PHP à partir de `composer.json` dans `vendor/` :
 
