@@ -7,7 +7,7 @@
     RewriteEngine On
 
     # Répertoire projet dans un sous-dossier comme /symfony
-    RewriteBase /symfony
+    # RewriteBase /symfony
 
     # Si le fichier demandé existe : on le sert directement
     RewriteCond %{REQUEST_FILENAME} -f
@@ -16,3 +16,14 @@
     # Sinon, on envoie tout vers index.php
     RewriteRule ^ index.php [L]
 </IfModule>
+
+
+# Redirect to URI without front controller and with trailing slash for directories
+# RewriteCond %{REQUEST_FILENAME} !-f
+# RewriteCond %{REQUEST_URI} (.+)/$
+# RewriteRule ^ %1 [R=301,L]
+
+# Rewrite to front controller if other rules don't apply
+# RewriteCond %{REQUEST_FILENAME} !-f
+# RewriteCond %{REQUEST_FILENAME} !-d
+# RewriteRule ^ index.php [L]
