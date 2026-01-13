@@ -8,8 +8,6 @@ On commence par installer Composer (si ce n'est pas déjà fait) :
 
 ```bash
 $ sudo apt install composer
-$ composer show symfony/framework-bundle
- version: v6.4.26
 ```
 
 Puis on installe Symfony CLI : <https://symfony.com/download>
@@ -24,7 +22,11 @@ $ symfony version
   Symfony CLI version 5.15.1 (c) 2021-2025 Fabien Potencier (2025-10-04T08:05:57Z - stable)
 ```
 
-
+On vérifie que Symfony est correctement installé :
+```bash
+$ composer show symfony/framework-bundle
+ version: v6.4.26
+```
 
 ## Création du projet `demo`
 
@@ -55,6 +57,18 @@ On peut alors consulter cette page sur <http://localhost:8000/hello>.
 
 ## Déploiement dans Apache2
 
+Si on déploie le site web sur un nouveau serveur *Apache2* en production, il faut commencer par installer les dépendances : apache2, composer, symfony... Et ne pas oublier d'installer les dépendances *vendor* de l'application...
+
+```bash
+$ apt install apache2
+$ apt install composer
+$ wget https://get.symfony.com/cli/installer -O - | bash
+$ cp $HOME/.symfony5/bin/symfony /usr/local/bin/symfony
+$ cd <...>/symfony-demo/ 
+$ composer install
+$ composer show symfony/framework-bundle
+```
+
 Il ne faut pas oublier d'activer le module *rewrite*, qui est important pour que le framework Symfony puisse gérer les routes correctement.
 
 ```bash
@@ -66,7 +80,7 @@ Activer le site `symfony` en copiant le fichier de configuration [symfony.conf](
 
 ```bash
 sudo cp config/symfony.conf /etc/apache2/sites-available/
-sudo aen2site synfony
+sudo aen2site symfony
 ```
 
 Nettoyage du cache Symfony :
@@ -123,7 +137,7 @@ Le *profiler* est désactivé et on tombe sur des erreurs 404 en cas de problèm
 
 ## Annexes
 
-## Déploiement dans Apache2
+## Déploiement dans Apache2 en local
 
 Il faut commencer à copier `cas-demo/*` dans `/var/www/symfony/`.
 
@@ -147,3 +161,9 @@ Il ne faut pas oublier d'activer le mode *rewrite*... avant de redémarrer le se
 $ sudo a2enmod rewrite
 $ sudo systemctl restart apache2
 ```
+
+## Déploiement dans Apache2 au CREMI
+
+=> <https://promo-st.emi.u-bordeaux.fr/hello>
+
+à compléter...

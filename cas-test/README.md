@@ -35,7 +35,7 @@ $ composer show apereo/phpcas
 
 ```
 
-## Test Université de Bordeaux
+## Test Université de Bordeaux (CREMI)
 
 Pour réaliser ce test, il faut être membre de l'Université de Bordeaux, et avoir un compte (*idnum*) sur le serveur `cas.u-bordeaux.fr`.
 
