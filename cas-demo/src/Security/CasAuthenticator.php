@@ -99,7 +99,10 @@ class CasAuthenticator extends AbstractAuthenticator
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
     {
         error_log('[CAS] call onAuthenticationSuccess()');
-        return null; // continue
+        // continue...
+        // return null;
+        // redirect all to /private page
+        return new RedirectResponse($this->urlGenerator->generate('app_private'));
     }
 
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception): ?Response
