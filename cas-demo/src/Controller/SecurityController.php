@@ -20,10 +20,10 @@ class SecurityController extends AbstractController
     {
         // Déconnexion CAS
         // A) logout avec redirection
-        \phpCAS::logoutWithRedirectService('https://promo-st.emi.u-bordeaux.fr/');
+        // \phpCAS::logoutWithRedirectService('https://promo-st.emi.u-bordeaux.fr/');
         // \phpCAS::logoutWithRedirectService($this->generateUrl('home', [], true));
         
         // B) Ou juste \phpCAS::logout() pour rediriger vers le logout CAS par défaut
-        // \phpCAS::logout();
+        \phpCAS::logout();
     }
 }

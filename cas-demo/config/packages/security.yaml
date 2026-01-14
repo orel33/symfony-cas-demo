@@ -1,55 +1,36 @@
 security:
   enable_authenticator_manager: true
 
-# v0
-# providers:
-#   app_user_provider:
-#     memory:
-#       users:
-#         toto: { roles: ['ROLE_USER'] }
-#         admin: { roles: ['ROLE_USER', 'ROLE_ADMIN'] }
-
-# v1
-# providers:
-#   app_user_provider:
-#     memory: ~
-
-# v2
   providers:
-      cas_provider:
-        id: App\Security\User\CasUserProvider
+    cas_provider:
+      id: App\Security\User\CasUserProvider
 
   firewalls:
-
     dev:
       pattern: ^/(_(profiler|wdt)|css|images|js)/
       security: false
 
     homepage:
-      pattern: ^/$  
+      pattern: ^/$
       security: false
 
     public:
-      pattern: ^/public  
+      pattern: ^/public
       security: false
 
+    # catch-all firewall => CAS
     main:
-      pattern: ^/                           # catch-all firewall => CAS
-      lazy: true                            # don't authenticate until needed
-      # provider: app_user_provider           # how to load users
-      provider: cas_provider
-      custom_authenticator: App\Security\CasAuthenticator
-      # logout: { path: /logout, target: / }
-      logout:
-          path: app_logout
-          invalidate_session: true
-          # target_path: '/'   # facultatif, si tu veux rediriger localement après Symfony logout
+      pattern: ^/
+      lazy: true # don't authenticate until needed
+      provider: cas_provider # how to load users
+      custom_authenticator: App\Security\CasAuthenticator # how to auth users
+      logout: { path: app_logout, invalidate_session: true, target_path: "/" }
 
   # if firewalls are disable (security false), access_control is ignored!
   access_control:
-    - { path: ^/$, roles: PUBLIC_ACCESS }        # / is public
-    - { path: ^/public, roles: PUBLIC_ACCESS }   # /public is public
-    - { path: ^/admin, roles: ROLE_ADMIN }       # /admin requires ROLE_ADMIN
-    - { path: ^/hello, roles: ROLE_USER }        # /hello requires ROLE_USER 
-    - { path: ^/.*, roles: ROLE_USER }           # catch-all rule requires ROLE_USER
-    
+    - { path: ^/$, roles: PUBLIC_ACCESS } # / is public
+    - { path: ^/public, roles: PUBLIC_ACCESS } # /public is public
+    - { path: ^/admin, roles: ROLE_ADMIN } # /admin requires ROLE_ADMIN
+    - { path: ^/hello, roles: ROLE_USER } # /hello requires ROLE_USER
+    - { path: ^/.*, roles: ROLE_USER } # catch-all rule requires ROLE_USER
+
