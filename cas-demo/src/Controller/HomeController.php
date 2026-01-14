@@ -13,7 +13,7 @@ class HomeController extends AbstractController
     {
         $user = $this->getUser();
         $username = $user ? $user->getUserIdentifier() : null;
-        $email = $user && method_exists($user, 'getAttribute') ? $user->getAttribute('mail') : null;
+        $email = $user ? $user->getAttribute('mail') : null;
 
         return $this->render('home/index.html.twig', [
             'username' => $username,
@@ -24,12 +24,17 @@ class HomeController extends AbstractController
     #[Route('/public', name: 'app_public')]
     public function publicPage(): Response
     {
-        return new Response('<h1>Page publique - accessible sans login</h1>');
+        return new Response('<h1>Public Page - Welcome</h1> bla bla bla...');
     }
 
     #[Route('/private', name: 'app_private')]
     public function privatePage(): Response
     {
-        return new Response('<h1>Page privée - nécessite login CAS</h1>');
+        $user = $this->getUser();
+        $username = $user ? $user->getUserIdentifier() : null;
+        $email = $user ? $user->getAttribute('mail') : null;
+        // return new Response('<h1>Private Page:   - nécessite login CAS</h1>');
+        return new Response("<h1>Private Page - Welcome</h1> login: $username <br> email: $email");
+
     }
 }
