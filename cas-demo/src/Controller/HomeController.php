@@ -24,6 +24,12 @@ class HomeController extends AbstractController
 
     }
 
+    #[Route('/login', name: 'app_login')]
+    public function login(): never
+    {
+        throw new \LogicException('Handled by CAS authenticator.');
+    }
+
     #[Route('/public', name: 'app_public')]
     public function publicPage(): Response
     {

@@ -26,7 +26,10 @@ class CasAuthenticator extends AbstractAuthenticator
 
     public function supports(Request $request): ?bool
     {
-        return true; // toujours activer l'authentification CAS
+        // 1) toujours activer l'authentification CAS, indépendamment de la route demandée
+        // return true; 
+        // 2) déclenche l'authentification CAS que si l'on consulter explicitement la route '/login'
+        return $request->attributes->get('_route') === 'app_login';
     }
 
     public function authenticate(Request $request): SelfValidatingPassport
