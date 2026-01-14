@@ -5,26 +5,20 @@ security:
     cas_provider:
       id: App\Security\User\CasUserProvider
 
+
   firewalls:
-    dev:
-      pattern: ^/(_(profiler|wdt)|css|images|js)/
-      security: false
+      dev:
+          pattern: ^/(_(profiler|wdt)|css|images|js)/
+          security: false
 
-    homepage:
-      pattern: ^/$
-      security: false
+    # main firewall (catch-all)
+      main:
+          pattern: ^/
+          provider: cas_provider
+          custom_authenticator: App\Security\CasAuthenticator
+          logout: { path: app_logout, invalidate_session: true} # target: "/" 
+          stateless: false
 
-    public:
-      pattern: ^/public
-      security: false
-
-    # catch-all firewall => CAS
-    main:
-      pattern: ^/
-      lazy: true # don't authenticate until needed
-      provider: cas_provider # how to load users
-      custom_authenticator: App\Security\CasAuthenticator # how to auth users
-      logout: { path: app_logout, invalidate_session: true, target: "/" }
 
   # if firewalls are disable (security false), access_control is ignored!
   access_control:
