@@ -16,7 +16,7 @@ class HelloController extends AbstractController
         $username = $user->getUserIdentifier();
         $email = $user->getAttribute('mail');   // attribut CAS optionnel
 
-        return new Response("Bienvenue $username, ton email est $email");
+        return new Response("<h1>Welcome $username</h1> email: $email");
         //  return new Response('<h1>Hello ' . htmlspecialchars($username) . ' !</h1>');
     }
 
