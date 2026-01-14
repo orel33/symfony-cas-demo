@@ -15,10 +15,13 @@ class HomeController extends AbstractController
         $username = $user ? $user->getUserIdentifier() : null;
         $email = $user ? $user->getAttribute('mail') : null;
 
-        return $this->render('home/index.html.twig', [
-            'username' => $username,
-            'email' => $email,
-        ]);
+        // return $this->render('home/index.html.twig', [
+        //     'username' => $username,
+        //     'email' => $email,
+        // ]);
+        // return new Response('<h1>Home Page - Welcome</h1> bla bla bla...');
+        return new Response("<h1>Home Page - Welcome</h1> login: $username <br> email: $email");
+
     }
 
     #[Route('/public', name: 'app_public')]
