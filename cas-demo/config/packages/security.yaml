@@ -3,10 +3,12 @@ security:
 
   providers:
     app_user_provider:
-      memory:
-        users:
-          toto: { roles: ['ROLE_USER'] }
-          admin: { roles: ['ROLE_USER', 'ROLE_ADMIN'] }
+      memory: ~
+      
+#      memory:
+#        users:
+#          toto: { roles: ['ROLE_USER'] }
+#          admin: { roles: ['ROLE_USER', 'ROLE_ADMIN'] }
 
   firewalls:
 
@@ -24,6 +26,7 @@ security:
 
     main:
       pattern: ^/                           # catch-all firewall
+      # security: false			    # disable CAS auth
       provider: app_user_provider           # how to load users
       lazy: true                            # don't authenticate until needed
       custom_authenticator: App\Security\CasAuthenticator
