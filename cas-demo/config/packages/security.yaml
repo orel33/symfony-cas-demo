@@ -30,7 +30,7 @@ security:
   access_control:
     - { path: ^/$, roles: PUBLIC_ACCESS } # / is public
     - { path: ^/public, roles: PUBLIC_ACCESS } # /public is public
-    - { path: ^/admin, roles: ROLE_ADMIN } # /admin requires ROLE_ADMIN
     - { path: ^/hello, roles: ROLE_USER } # /hello requires ROLE_USER
+    - { path: ^/admin, roles: ROLE_ADMIN } # /admin requires ROLE_ADMIN
     - { path: ^/.*, roles: ROLE_USER } # catch-all rule requires ROLE_USER
 
