@@ -14,9 +14,10 @@ class HelloController extends AbstractController
         // $username = \phpCAS::getUser();
         $user = $this->getUser();
         $username = $user->getUserIdentifier();
-        $email = $user->getAttribute('mail');   // attribut CAS optionnel
+        $displayname = $user->getAttribute('displayName');   // attribut CAS optionnel
+        $email = $user->getAttribute('mail');                // attribut CAS optionnel
 
-        return new Response("<h1>Welcome $username</h1> email: $email");
+        return new Response("<h1>Welcome $displayname</h1> login: $username <br> email: $email");
         //  return new Response('<h1>Hello ' . htmlspecialchars($username) . ' !</h1>');
     }
 
