@@ -24,7 +24,7 @@ security:
       lazy: true # don't authenticate until needed
       provider: cas_provider # how to load users
       custom_authenticator: App\Security\CasAuthenticator # how to auth users
-      logout: { path: app_logout, invalidate_session: true, target_path: "/" }
+      logout: { path: app_logout, invalidate_session: true, target: "/" }
 
   # if firewalls are disable (security false), access_control is ignored!
   access_control:
