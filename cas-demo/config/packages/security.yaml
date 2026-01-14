@@ -16,7 +16,7 @@ security:
           pattern: ^/
           provider: cas_provider
           custom_authenticator: App\Security\CasAuthenticator
-          logout: { path: app_logout, invalidate_session: true} # target: "/" 
+          logout: { path: app_logout, invalidate_session: true }
           stateless: false
 
 
@@ -24,11 +24,9 @@ security:
   access_control:
     - { path: ^/$, roles: PUBLIC_ACCESS } # / is public
     - { path: ^/public, roles: PUBLIC_ACCESS } # /public is public
-    - { path: ^/login, roles: PUBLIC_ACCESS }
+    - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY } # ???
     - { path: ^/private, roles: ROLE_USER } # /private requires ROLE_USER
     - { path: ^/cas-logout, roles: ROLE_USER }
     - { path: ^/.*, roles: ROLE_USER } # catch-all rule requires ROLE_USER
 
-
-    # - { path: ^/admin, roles: ROLE_ADMIN } # /admin requires ROLE_ADMIN
-    # - { path: ^/, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+#    - { path: ^/login, roles: PUBLIC_ACCESS }

@@ -24,6 +24,7 @@ class CasAuthenticator extends AbstractAuthenticator
         $this->router = $router;
     }
 
+    // Symfony appelle authenticate() seulement si supports() retourne true
     public function supports(Request $request): ?bool
     {
         // 1) toujours activer l'authentification CAS, indépendamment de la route demandée
