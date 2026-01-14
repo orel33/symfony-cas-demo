@@ -5,20 +5,18 @@ security:
     cas_provider:
       id: App\Security\User\CasUserProvider
 
-
   firewalls:
-      dev:
-          pattern: ^/(_(profiler|wdt)|css|images|js)/
-          security: false
+    dev:
+      pattern: ^/(_(profiler|wdt)|css|images|js)/
+      security: false
 
     # main firewall (catch-all)
-      main:
-          pattern: ^/
-          provider: cas_provider
-          custom_authenticator: App\Security\CasAuthenticator
-          logout: { path: app_logout, invalidate_session: true }
-          stateless: false
-
+    main:
+      pattern: ^/
+      provider: cas_provider
+      custom_authenticator: App\Security\CasAuthenticator
+      logout: { path: app_logout, invalidate_session: true, target: "/" }
+      stateless: false
 
   # if firewalls are disable (security false), access_control is ignored!
   access_control:
@@ -27,7 +25,6 @@ security:
     - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY } # ???
     - { path: ^/cas-logout, roles: ROLE_USER }
     - { path: ^/, roles: PUBLIC_ACCESS }
-
 #    - { path: ^/$, roles: PUBLIC_ACCESS } # / is public
 #    - { path: ^/.*, roles: ROLE_USER } # catch-all rule requires ROLE_USER
 #    - { path: ^/login, roles: PUBLIC_ACCESS }
