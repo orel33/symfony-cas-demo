@@ -2,18 +2,28 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Accueil</title>
+    <title>Accueil Demo CAS</title>
 </head>
 <body>
-    <h1>Bienvenue sur la page d'accueil !</h1>
+    <h1>Bienvenue sur la démo CAS !</h1>
 
     {% if app.user %}
-        <p>Connecté en tant que : {{ app.user.userIdentifier }}</p>
-        <p>Email : {{ app.user.getAttribute('mail') }}</p>
+        <p>Vous êtes connecté :</p>
+        <ul>
+            <li>Login : {{ app.user.userIdentifier }}</li>
+            <li>Email : {{ app.user.getAttribute('mail') }}</li>
+        </ul>
         <a href="{{ path('app_cas_logout') }}">Déconnexion</a>
     {% else %}
         <p>Vous n'êtes pas connecté.</p>
-        <a href="{{ path('app_hello') }}">Aller à la page de démo Hello</a>
     {% endif %}
+
+    <hr>
+
+    <p>Liens de la démo :</p>
+    <ul>
+        <li><a href="{{ path('app_public') }}">Page publique (pas besoin de login)</a></li>
+        <li><a href="{{ path('app_private') }}">Page privée (login CAS requis)</a></li>
+    </ul>
 </body>
 </html>
