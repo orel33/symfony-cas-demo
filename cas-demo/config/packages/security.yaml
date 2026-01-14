@@ -34,13 +34,17 @@ security:
       security: false
 
     main:
-      pattern: ^/                           # catch-all firewall
+      pattern: ^/                           # catch-all firewall => CAS
       lazy: true                            # don't authenticate until needed
       # provider: app_user_provider           # how to load users
       provider: cas_provider
       custom_authenticator: App\Security\CasAuthenticator
-      logout: { path: /logout, target: / }
-  
+      # logout: { path: /logout, target: / }
+      logout:
+          path: app_logout
+          invalidate_session: true
+          # target_path: '/'   # facultatif, si tu veux rediriger localement après Symfony logout
+
   # if firewalls are disable (security false), access_control is ignored!
   access_control:
     - { path: ^/$, roles: PUBLIC_ACCESS }        # / is public

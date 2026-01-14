@@ -21,11 +21,12 @@ class HelloController extends AbstractController
         //  return new Response('<h1>Hello ' . htmlspecialchars($username) . ' !</h1>');
     }
 
-    #[Route('/logout', name: 'app_logout')]
-    public function logout(): void
-    {
-        throw new \Exception('Cette méthode peut rester vide.');
-    }
+    // #[Route('/logout', name: 'app_logout')]
+    // public function logout(): void
+    // {
+    //     throw new \Exception('Cette méthode peut rester vide.');
+    // }
+
 }
 
 
