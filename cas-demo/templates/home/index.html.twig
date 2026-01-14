@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Accueil</title>
+</head>
+<body>
+    <h1>Bienvenue sur la page d'accueil !</h1>
+
+    {% if app.user %}
+        <p>Connecté en tant que : {{ app.user.userIdentifier }}</p>
+        <p>Email : {{ app.user.getAttribute('mail') }}</p>
+        <a href="{{ path('app_cas_logout') }}">Déconnexion</a>
+    {% else %}
+        <p>Vous n'êtes pas connecté.</p>
+        <a href="{{ path('app_hello') }}">Aller à la page de démo Hello</a>
+    {% endif %}
+</body>
+</html>
