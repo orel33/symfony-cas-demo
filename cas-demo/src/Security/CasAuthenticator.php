@@ -60,7 +60,6 @@ class CasAuthenticator extends AbstractAuthenticator
         \phpCAS::forceAuthentication();
 
         $username = \phpCAS::getUser();
-        $attributes = \phpCAS::getAttributes();
         error_log('[CAS] authenticated user : ' . $username);
 
         // v0 (static)
@@ -77,10 +76,18 @@ class CasAuthenticator extends AbstractAuthenticator
 
         // v2 (custom in-memory user)
         $passport = new SelfValidatingPassport(
-            new UserBadge($username, function ($id) use ($attributes) {
-                return new CasUser($id, ['ROLE_USER'], $attributes);
-            })
+            new UserBadge(
+                $username,
+                fn($id) =>
+                new CasUser($id, ['ROLE_USER'], \phpCAS::getAttributes())
+            )
         );
+
+        // $passport = new SelfValidatingPassport(
+        //     new UserBadge($username, function ($id) use ($attributes) {
+        //         return new CasUser($id, ['ROLE_USER'], $attributes);
+        //     })
+        // );
 
         return $passport;
     }

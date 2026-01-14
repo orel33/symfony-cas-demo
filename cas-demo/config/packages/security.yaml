@@ -1,14 +1,23 @@
 security:
   enable_authenticator_manager: true
 
+# v0
+# providers:
+#   app_user_provider:
+#     memory:
+#       users:
+#         toto: { roles: ['ROLE_USER'] }
+#         admin: { roles: ['ROLE_USER', 'ROLE_ADMIN'] }
+
+# v1
+# providers:
+#   app_user_provider:
+#     memory: ~
+
+# v2
   providers:
-    app_user_provider:
-      memory: ~
-      
-#      memory:
-#        users:
-#          toto: { roles: ['ROLE_USER'] }
-#          admin: { roles: ['ROLE_USER', 'ROLE_ADMIN'] }
+      cas_provider:
+        id: App\Security\User\CasUserProvider
 
   firewalls:
 
@@ -26,9 +35,9 @@ security:
 
     main:
       pattern: ^/                           # catch-all firewall
-      # security: false			    # disable CAS auth
-      provider: app_user_provider           # how to load users
       lazy: true                            # don't authenticate until needed
+      # provider: app_user_provider           # how to load users
+      provider: cas_provider
       custom_authenticator: App\Security\CasAuthenticator
       logout: { path: /logout, target: / }
   
