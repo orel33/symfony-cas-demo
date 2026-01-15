@@ -10,7 +10,7 @@ security:
       pattern: ^/(_(profiler|wdt)|css|images|js)/
       security: false
 
-    # main firewall (catch-all)
+    # single main firewall (catch-all)
     main:
       pattern: ^/
       provider: cas_provider
@@ -21,9 +21,9 @@ security:
 
   # if firewalls are disable (security false), access_control is ignored!
   access_control:
-    - { path: ^/public, roles: PUBLIC_ACCESS } # /public is public
-    - { path: ^/private, roles: ROLE_USER } # /private requires ROLE_USER
-    - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY } # ???
+    - { path: ^/public, roles: PUBLIC_ACCESS }
+    - { path: ^/private, roles: ROLE_USER }
+    - { path: ^/login, roles: ROLE_USER }
     - { path: ^/cas-logout, roles: ROLE_USER }
     - { path: ^/, roles: PUBLIC_ACCESS }
 
