@@ -84,7 +84,7 @@ class CasAuthenticator extends AbstractAuthenticator
         // continue...
         // return null;
         // redirect all to /private page
-        return new RedirectResponse($this->router->generate('app_private'));
+        return new RedirectResponse($this->router->generate('app_home'));
     }
 
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception): ?Response

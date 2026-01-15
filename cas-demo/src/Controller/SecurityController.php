@@ -10,6 +10,14 @@ use App\Security\CasHelper;
 
 class SecurityController extends AbstractController
 {
+    #[Route('/login', name: 'app_login')]
+    public function login(): never
+    {
+        // should be never called...
+        throw new \LogicException('Handled by CAS authenticator.');
+    }
+
+
     #[Route('/logout', name: 'app_logout')]
     public function logout(): void
     {
