@@ -25,6 +25,4 @@ security:
     - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY } # ???
     - { path: ^/cas-logout, roles: ROLE_USER }
     - { path: ^/, roles: PUBLIC_ACCESS }
-#    - { path: ^/$, roles: PUBLIC_ACCESS } # / is public
-#    - { path: ^/.*, roles: ROLE_USER } # catch-all rule requires ROLE_USER
-#    - { path: ^/login, roles: PUBLIC_ACCESS }
+

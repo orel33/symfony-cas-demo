@@ -14,6 +14,7 @@ use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\User\InMemoryUser;
 
 use App\Security\User\CasUser;
+use App\Security\CasHelper;
 
 class CasAuthenticator extends AbstractAuthenticator
 {
@@ -29,7 +30,7 @@ class CasAuthenticator extends AbstractAuthenticator
     {
         // 1) toujours activer l'authentification CAS, indépendamment de la route demandée
         // return true; 
-        // 2) déclenche l'authentification CAS que si l'on consulter explicitement la route '/login'
+        // 2) déclenche l'authentification CAS que si l'on consulte explicitement la route '/login'
         return $request->attributes->get('_route') === 'app_login';
     }
 
@@ -40,26 +41,7 @@ class CasAuthenticator extends AbstractAuthenticator
         if (session_status() === PHP_SESSION_NONE)
             session_start();
 
-
-        \phpCAS::setDebug('/tmp/phpcas.log'); // FIXME: deprecated
-
-        // cas server configuration
-        $cas_hostname = $_ENV['CAS_SERVER_HOSTNAME'] ?? 'localhost';
-        $cas_port = $_ENV['CAS_SERVER_PORT'] ?? '9000';
-        $cas_uri = $_ENV['CAS_SERVER_URI'] ?? '/cas';
-        // $cas_url = "http://$cas_hostname:$cas_port$cas_uri/"; # don't forget trailing slash!
-        $cas_url = "https://$cas_hostname:$cas_port$cas_uri/"; # don't forget trailing slash!
-
-        // service configuration
-        // $service_url = 'http://localhost:8000/';
-        $service_url = 'https://promo-st.emi.u-bordeaux.fr/';
-
-        // initialize phpCAS
-        \phpCAS::client(CAS_VERSION_3_0, $cas_hostname, (int) $cas_port, $cas_uri, $service_url);
-        $client = \phpCAS::getCasClient();
-        $client->setBaseURL($cas_url);  // for HTTP CAS server (local CAS only)
-        \phpCAS::setNoCasServerValidation(); // accept self-signed certificates (local CAS only)
-
+        CasHelper::init();
         // force CAS authentication
         \phpCAS::forceAuthentication();
 
@@ -102,7 +84,7 @@ class CasAuthenticator extends AbstractAuthenticator
         // continue...
         // return null;
         // redirect all to /private page
-        return new RedirectResponse($this->urlGenerator->generate('app_private'));
+        return new RedirectResponse($this->router->generate('app_private'));
     }
 
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception): ?Response

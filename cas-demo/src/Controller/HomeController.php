@@ -19,7 +19,7 @@ class HomeController extends AbstractController
         //     'username' => $username,
         //     'email' => $email,
         // ]);
-        // return new Response('<h1>Home Page - Welcome</h1> bla bla bla...');
+
         return new Response("<h1>Home Page - Welcome</h1> login: $username <br> email: $email");
 
     }
@@ -27,6 +27,7 @@ class HomeController extends AbstractController
     #[Route('/login', name: 'app_login')]
     public function login(): never
     {
+        // should be never called...
         throw new \LogicException('Handled by CAS authenticator.');
     }
 
@@ -42,7 +43,6 @@ class HomeController extends AbstractController
         $user = $this->getUser();
         $username = $user ? $user->getUserIdentifier() : null;
         $email = $user ? $user->getAttribute('mail') : null;
-        // return new Response('<h1>Private Page:   - nécessite login CAS</h1>');
         return new Response("<h1>Private Page - Welcome</h1> login: $username <br> email: $email");
 
     }

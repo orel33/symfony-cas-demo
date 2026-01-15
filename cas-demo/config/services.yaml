@@ -10,11 +10,3 @@ services:
             - '../src/DependencyInjection/'
             - '../src/Kernel.php'
 
-    # App\Controller\:
-    #     resource: '../src/Controller/'
-    #     autowire: true
-    #     autoconfigure: true
-
-    # App\Security\CasAuthenticator:
-    #     autowire: true
-    #     autoconfigure: true
