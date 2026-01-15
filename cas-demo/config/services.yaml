@@ -10,3 +10,9 @@ services:
             - '../src/DependencyInjection/'
             - '../src/Kernel.php'
 
+    # Déclaration explicite pour l'entry point CAS
+    App\Security\CasEntryPoint:
+        autowire: true
+        autoconfigure: true
+
+    

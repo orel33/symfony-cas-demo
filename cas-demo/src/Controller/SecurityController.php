@@ -17,7 +17,6 @@ class SecurityController extends AbstractController
         throw new \LogicException('Handled by CAS authenticator.');
     }
 
-
     #[Route('/logout', name: 'app_logout')]
     public function logout(): void
     {

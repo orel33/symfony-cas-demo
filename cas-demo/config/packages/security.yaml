@@ -15,6 +15,7 @@ security:
       pattern: ^/
       provider: cas_provider
       custom_authenticator: App\Security\CasAuthenticator
+      entry_point: App\Security\CasEntryPoint
       logout: { path: app_logout, invalidate_session: true, target: "/" }
       stateless: false
 

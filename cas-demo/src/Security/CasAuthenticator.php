@@ -21,6 +21,7 @@ use App\Security\CasHelper;
 class CasAuthenticator extends AbstractAuthenticator
 {
     private RouterInterface $router;
+    // private UrlGeneratorInterface $router; FIXME: better to use this
 
     public function __construct(RouterInterface $router)
     {
@@ -50,18 +51,6 @@ class CasAuthenticator extends AbstractAuthenticator
         $username = \phpCAS::getUser();
         error_log('[CAS] authenticated user : ' . $username);
 
-        // v0 (static)
-        //$passport = new SelfValidatingPassport(new UserBadge($username));
-
-        // v1 (symfony in-memory user)
-        /*
-        $passport = new SelfValidatingPassport(
-            new UserBadge($username, function ($identifier) {
-                return new InMemoryUser($identifier, null, ['ROLE_USER']);
-            })
-        );
-        */
-
         // v2 (custom in-memory user)
         $passport = new SelfValidatingPassport(
             new UserBadge(
@@ -71,22 +60,14 @@ class CasAuthenticator extends AbstractAuthenticator
             )
         );
 
-        // $passport = new SelfValidatingPassport(
-        //     new UserBadge($username, function ($id) use ($attributes) {
-        //         return new CasUser($id, ['ROLE_USER'], $attributes);
-        //     })
-        // );
-
         return $passport;
     }
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
     {
         error_log('[CAS] call onAuthenticationSuccess()');
-        // continue...
-        // return null;
-        // redirect all to /private page
         return new RedirectResponse($this->router->generate('app_home'));
+        // FIXME: use $targetpath to redirect to the asked page befaure auth.
     }
 
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception): ?Response
@@ -95,12 +76,6 @@ class CasAuthenticator extends AbstractAuthenticator
         // return new RedirectResponse('/');
         return new Response('Erreur CAS : ' . $exception->getMessage(), Response::HTTP_UNAUTHORIZED);
 
-    }
-
-    public function start(Request $request, AuthenticationException $authException = null): Response
-    {
-        // redirection vers /login si on essaie d'accéder à une page protégée sans auth
-        return new RedirectResponse($this->router->generate('app_login'));
     }
 
 }
