@@ -168,9 +168,3 @@ $client->setBaseURL($cas_url);
 \phpCAS::setServerLogoutURL($cas_url . 'logout');
 ```
 
-## Version HTTPS
-
-**TODO** : En pratique, il faudrait corriger le code de cette démo pour utiliser nativement HTTPS avec un certificat autosigné. A suivre...
-
----
-

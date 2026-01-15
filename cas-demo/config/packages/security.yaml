@@ -10,7 +10,7 @@ security:
       pattern: ^/(_(profiler|wdt)|css|images|js)/
       security: false
 
-    # single main firewall (catch-all)
+    # main firewall (catch-all)
     main:
       pattern: ^/
       provider: cas_provider
