@@ -16,6 +16,8 @@ use Symfony\Component\Security\Core\User\InMemoryUser;
 use App\Security\User\CasUser;
 use App\Security\CasHelper;
 
+
+
 class CasAuthenticator extends AbstractAuthenticator
 {
     private RouterInterface $router;
@@ -93,6 +95,12 @@ class CasAuthenticator extends AbstractAuthenticator
         // return new RedirectResponse('/');
         return new Response('Erreur CAS : ' . $exception->getMessage(), Response::HTTP_UNAUTHORIZED);
 
+    }
+
+    public function start(Request $request, AuthenticationException $authException = null): Response
+    {
+        // redirection vers /login si on essaie d'accéder à une page protégée sans auth
+        return new RedirectResponse($this->router->generate('app_login'));
     }
 
 }
